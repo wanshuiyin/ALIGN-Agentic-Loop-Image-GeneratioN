@@ -10,6 +10,13 @@
 
 《清明上河图·武汉》· Claude 执行 + Codex MCP 审阅 · 11 个版本。[展开长卷，回放十道工序 →](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1)
 
+<p>
+  <a href="https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1&amp;cam=0.733"><img src="docs/assets/wuhan-yellow-crane-tower-detail.png" width="49%" alt="黄鹤楼局部：层叠屋檐、窗廊与台阶上的游人"></a>
+  <a href="https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1&amp;cam=0.914"><img src="docs/assets/wuhan-hubuxiang-detail.png" width="49%" alt="户部巷局部：连续店铺、招牌、人群与轮渡码头"></a>
+</p>
+
+**放大看细节：**左为黄鹤楼，右为户部巷街市。点击局部图，可以直接展开长卷的对应位置。
+
 [![千里江山图意临：程序绘制的最终全卷](docs/assets/qianli-final-whole.png)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qianli-process/qianli.html#p=1)
 
 《千里江山图》意临 · Claude 执行 + Codex MCP 审阅 · 十道绘画工序。[展开长卷，回放绘画过程 →](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qianli-process/qianli.html#p=1)

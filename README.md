@@ -10,6 +10,13 @@ English · [中文](README_CN.md) · [Interactive gallery](https://wanshuiyin.gi
 
 *Qingming in Wuhan* · Claude executor + Codex MCP reviewer · 11 versions. [Explore the scroll and replay its construction →](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1)
 
+<p>
+  <a href="https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1&amp;cam=0.733"><img src="docs/assets/wuhan-yellow-crane-tower-detail.png" width="49%" alt="Yellow Crane Tower: layered eaves, galleries and visitors on the steps"></a>
+  <a href="https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1&amp;cam=0.914"><img src="docs/assets/wuhan-hubuxiang-detail.png" width="49%" alt="Hubuxiang street life: shopfronts, signs, crowds and the ferry quay"></a>
+</p>
+
+**A closer look:** Yellow Crane Tower (left) · Hubuxiang street life (right). Click either image to explore that part of the scroll.
+
 [![A Thousand Li of Rivers and Mountains — the final program-drawn handscroll](docs/assets/qianli-final-whole.png)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qianli-process/qianli.html#p=1)
 
 *A Thousand Li of Rivers and Mountains* · Claude executor + Codex MCP reviewer · Ten painting stages. [Explore the scroll and replay its construction →](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qianli-process/qianli.html#p=1)
