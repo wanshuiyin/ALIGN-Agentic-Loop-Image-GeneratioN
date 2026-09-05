@@ -8,6 +8,10 @@ English · [中文](README_CN.md) · [Interactive gallery](https://wanshuiyin.gi
 
 *Qingming in Wuhan* · Claude executor + Codex MCP reviewer · 11 versions. [Explore the scroll and replay its construction →](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1)
 
+[![A Thousand Li of Rivers and Mountains — the final program-drawn handscroll](docs/assets/qianli-final-whole.png)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qianli-process/qianli.html#p=1)
+
+*A Thousand Li of Rivers and Mountains* · Claude executor + Codex MCP reviewer · Ten painting stages. [Explore the scroll and replay its construction →](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qianli-process/qianli.html#p=1)
+
 [![Figure 1 — the ALIGN workflow](docs/figure1.png)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/align-figure/figure.html#p=1)
 
 Figure 1 is itself a p5.js program: six construction stages and an [SVG export](docs/figure1.svg).

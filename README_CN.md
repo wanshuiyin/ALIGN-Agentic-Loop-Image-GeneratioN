@@ -8,6 +8,10 @@
 
 《清明上河图·武汉》· Claude 执行 + Codex MCP 审阅 · 11 个版本。[展开长卷，回放十道工序 →](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1)
 
+[![千里江山图意临：程序绘制的最终全卷](docs/assets/qianli-final-whole.png)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qianli-process/qianli.html#p=1)
+
+《千里江山图》意临 · Claude 执行 + Codex MCP 审阅 · 十道绘画工序。[展开长卷，回放绘画过程 →](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qianli-process/qianli.html#p=1)
+
 [![Figure 1：ALIGN 的工作流程](docs/figure1.png)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/align-figure/figure.html#p=1)
 
 Figure 1 也是一段 p5.js 程序，支持六阶段构建回放和 [SVG 导出](docs/figure1.svg)。
