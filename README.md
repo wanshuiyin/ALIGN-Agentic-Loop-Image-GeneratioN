@@ -1,5 +1,7 @@
 # ALIGN — Agentic Loop Image GeneratioN
 
+> 🎨 **Let coding agents paint.** ALIGN explores image generation beyond diffusion and autoregressive image models: a powerful coding agent studies a reference, writes p5.js to draw the picture, and improves the program through independent visual review. Every stroke, layer and construction stage lives in source you can read, edit and replay.
+
 English · [中文](README_CN.md) · [Interactive gallery](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/)
 
 [![Qingming in Wuhan — the final handscroll](docs/assets/cc-final-whole.png)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1)
@@ -9,8 +11,6 @@ English · [中文](README_CN.md) · [Interactive gallery](https://wanshuiyin.gi
 [![Figure 1 — the ALIGN workflow](docs/figure1.png)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/align-figure/figure.html#p=1)
 
 Figure 1 is itself a p5.js program: six construction stages and an [SVG export](docs/figure1.svg).
-
-ALIGN gives a coding agent a reference image and a subject, then asks it to write the program that draws the picture. Strokes, layers and construction order live in editable source. The paintings and method figure above were made this way.
 
 The loop is straightforward: study the reference, specify the work, draw and render, ask a fresh reviewer to look at the pixels, then change the program. A small wiki keeps the decisions and reasons across rounds. Feedback can be accepted, challenged against the reference, or reverted when the result gets worse. The skills follow [HERO](https://github.com/wanshuiyin/HERO-Anti-OverDefense/blob/main/RULES.md): useful work and concrete checks, without extra defensive machinery.
 

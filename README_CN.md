@@ -1,5 +1,7 @@
 # ALIGN — Agentic Loop Image GeneratioN
 
+> 🎨 **让 coding agent 直接作画。** 在 diffusion 和自回归图像模型之外，ALIGN 探索一条用代码生成图像的路线：依靠强大的编程能力，让 agent 研究参考、用 p5.js 落笔，再通过独立视觉审阅逐轮改进。每一笔、每一层、每一道工序都在源码里，可以读、可以改，也可以从空白开始回放。
+
 [English](README.md) · 中文 · [交互展示](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/)
 
 [![清明上河图·武汉：Claude 执行、Codex MCP 审阅的最终全卷](docs/assets/cc-final-whole.png)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1)
@@ -9,8 +11,6 @@
 [![Figure 1：ALIGN 的工作流程](docs/figure1.png)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/align-figure/figure.html#p=1)
 
 Figure 1 也是一段 p5.js 程序，支持六阶段构建回放和 [SVG 导出](docs/figure1.svg)。
-
-给编程 agent 一张参考画、一个题材，让它写出绘画的程序。笔触、图层和落笔次序都在源码里，可以读、可以改，也可以从空白开始回放。上面的长卷和方法图都是这样画出来的。
 
 ALIGN 把这个过程接成循环：研究参考，写下规格，编程并渲染，交给新开的评审看图，再把反馈改进程序。一个小型 wiki 留下每轮的决定和理由；意见可以采纳，也可以拿参考图来反驳，改坏了就回退。技能遵循 [HERO](https://github.com/wanshuiyin/HERO-Anti-OverDefense/blob/main/RULES.md)：做有用的事，检查具体问题，避免过度防御。
 
