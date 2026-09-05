@@ -14,11 +14,11 @@ Figure 1 is itself a p5.js program: six construction stages and an [SVG export](
 
 The loop is straightforward: study the reference, specify the work, draw and render, ask a fresh reviewer to look at the pixels, then change the program. A small wiki keeps the decisions and reasons across rounds. Feedback can be accepted, challenged against the reference, or reverted when the result gets worse. The skills follow [HERO](https://github.com/wanshuiyin/HERO-Anti-OverDefense/blob/main/RULES.md): useful work and concrete checks, without extra defensive machinery.
 
-## What the loop changed
+## Why an Agentic Loop Works Better
 
-**Planning gets the picture started; visual feedback gives the next round something new to reason about.** Work such as [T2I-R1](https://arxiv.org/abs/2505.00703) shows benefits from reasoning in image generation. Our run also began with substantial planning: three composition proposals, a detailed specification and interfaces for eight modules. Even with a strong coding agent, the first complete render still had floating figures, repetitive buildings and weak spatial relationships.
+**Planning gets the picture started; visual feedback gives the next round something new to reason about.** Our run began with substantial planning: three composition proposals, a detailed specification and interfaces for eight modules. Even with a strong coding agent, the first complete render still had floating figures, repetitive buildings and weak spatial relationships.
 
-ALIGN extends reasoning across a **visual feedback loop: render → review → revise**. Each rendered image gives the reviewer concrete evidence; its critique gives the executor a new problem to solve. The program and wiki carry those decisions into the next round. Additional effort goes into examining consequences and revising the drawing rules, as well as planning before the first render.
+ALIGN brings two core ideas from our [ARIS (Auto-Research-In-Sleep)](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) project into programmatic image generation. The first is **an agentic loop that turns critique into action**. Here it takes the form **render → review → revise**: each image gives the reviewer concrete evidence, its critique gives the executor a new problem to solve, and the program and wiki carry decisions forward. Reasoning continues through the consequences of earlier choices.
 
 ![Four stages of the Wuhan bridge: v1, v4, v7 and v11, at the same viewport](docs/assets/wuhan-loop-evolution-en.png)
 
@@ -28,7 +28,9 @@ Some improvements required **changing how objects were constructed**. B3 identif
 
 B2–B11 used gpt-6-astra: 4.5 → 7.0, with two plateaus. Progress included reversals: v5's tree rewrite looked worse, so the next version restored the earlier construction and made a smaller correction. B1 used gpt-5.6-sol and is shown separately. The vertical axis starts at 3.5; scores are out of 10. [Original review log](examples/qingming-wuhan/wiki/review-log.md).
 
-## The same subject, two runs
+## Why Cross-Family Adversarial Review Is Necessary
+
+The second core idea comes from [ARIS](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep): **the executor creates; a reviewer from another model family actively challenges the result.** A fresh thread separates context, but models from the same family can still share habits and blind spots. Cross-family review is intended to challenge those recurring assumptions. In ALIGN's main workflow, Claude draws and Codex examines the pixels for what still fails.
 
 ![Final Wuhan scrolls and details: Claude executor with Codex MCP review, and Codex executor with independent Codex subagent review](docs/assets/wuhan-two-runs-en.png)
 
@@ -36,7 +38,7 @@ In these two runs, the Claude + Codex result has richer street scenes, more vari
 
 **Adversarial review gives the executor a concrete challenge.** The reviewer sees the rendered picture and reference, without access to the source code. Its job is to identify the most visible failures and check whether previous ones remain. In B1, it found that the left city dominated the composition, despite the plan calling for the bridge to be the focus. The executor then reduced the competing city crowds and reorganized the bridge events. The criticism changed the composition. [Decision D-07](examples/qingming-wuhan/wiki/decisions.md#d-07--桥必须是峰-2026-09-05).
 
-Using another model family is intended to challenge assumptions the executor may keep repeating. Both configurations here use independent review; the comparison shows how different executor–reviewer pairings developed the same subject. Our reading of these runs is that useful critique and the executor's ability to act on it matter together: more rounds alone do not explain the stronger result.
+Both configurations here use independent review; the comparison shows how different executor–reviewer pairings developed the same subject. Our reading of these runs is that useful critique and the executor's ability to act on it matter together: more rounds alone do not explain the stronger result.
 
 ## Use the skills
 
