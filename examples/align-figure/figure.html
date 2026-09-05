@@ -1,0 +1,767 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ALIGN Figure 1</title>
+<style>
+  /* one-token family names: p5 quotes any family string with whitespace, so a stack cannot be passed to textFont.
+     ALIGKai  — 楷, headings and the CJK lines (regular only; Kaiti has no bold and synthetic bold is a tell)
+     ALIGSans — humanist sans for English; a CJK glyph inside a sans run falls to 楷 via unicode-range, never to a system sans
+     ALIGSeal — the 白文 only: even bars, closest to 篆 among installed faces */
+  @font-face { font-family: ALIGKai; font-weight: 400; font-style: normal;
+    src: local("STKaitiSC-Regular"), local("Kaiti SC"), local("STKaiti"), local("Noto Serif SC"), local("Songti SC"); }
+  @font-face { font-family: ALIGSans; font-weight: 400; font-style: normal;
+    src: local("Optima-Regular"), local("Optima"), local("Seravek"), local("Gill Sans"), local("Helvetica Neue");
+    unicode-range: U+0000-024F, U+2000-206F, U+2190-21FF, U+2200-22FF, U+2700-27BF; }
+  @font-face { font-family: ALIGSans; font-weight: 700; font-style: normal;
+    src: local("Optima-Bold"), local("Optima Bold"), local("Seravek-Bold"), local("GillSans-Bold"), local("Helvetica Neue Bold");
+    unicode-range: U+0000-024F, U+2000-206F, U+2190-21FF, U+2200-22FF, U+2700-27BF; }
+  @font-face { font-family: ALIGSans; font-weight: 400; font-style: italic;
+    src: local("Optima-Italic"), local("Optima Italic"), local("Seravek-Italic"), local("GillSans-Italic"), local("Helvetica Neue Italic");
+    unicode-range: U+0000-024F, U+2000-206F, U+2190-21FF, U+2200-22FF, U+2700-27BF; }
+  @font-face { font-family: ALIGSans; font-weight: 700; font-style: italic;
+    src: local("Optima-BoldItalic"), local("Optima Bold Italic"), local("Seravek-BoldItalic"), local("GillSans-BoldItalic"), local("Helvetica Neue Bold Italic");
+    unicode-range: U+0000-024F, U+2000-206F, U+2190-21FF, U+2200-22FF, U+2700-27BF; }
+  @font-face { font-family: ALIGSans; font-weight: 400; font-style: normal; src: local("STKaitiSC-Regular"), local("Kaiti SC"), local("STKaiti"); unicode-range: U+3000-303F, U+4E00-9FFF, U+FF00-FFEF; }
+  @font-face { font-family: ALIGSans; font-weight: 700; font-style: normal; src: local("STKaitiSC-Regular"), local("Kaiti SC"), local("STKaiti"); unicode-range: U+3000-303F, U+4E00-9FFF, U+FF00-FFEF; }
+  @font-face { font-family: ALIGSans; font-weight: 400; font-style: italic; src: local("STKaitiSC-Regular"), local("Kaiti SC"), local("STKaiti"); unicode-range: U+3000-303F, U+4E00-9FFF, U+FF00-FFEF; }
+  @font-face { font-family: ALIGSans; font-weight: 700; font-style: italic; src: local("STKaitiSC-Regular"), local("Kaiti SC"), local("STKaiti"); unicode-range: U+3000-303F, U+4E00-9FFF, U+FF00-FFEF; }
+  @font-face { font-family: ALIGSeal; font-weight: 700; font-style: normal;
+    src: local("STHeitiSC-Medium"), local("Heiti SC Medium"), local("PingFangSC-Semibold"), local("PingFang SC Semibold"), local("Songti SC Bold"); }
+  html, body { margin: 0; background: #ffffff; color: #2b2620;
+    font: 14px Optima, Seravek, "Gill Sans", "Helvetica Neue", Helvetica, sans-serif; }
+  #host { width: 1800px; height: 1000px; margin: 0; }
+  #host canvas { display: block; }
+  #controls { display: flex; align-items: center; gap: 8px; padding: 10px 12px; width: 1776px; }
+  #controls button { font: inherit; padding: 4px 12px; border: 1px solid #b9ad94; background: #ece2cc;
+    border-radius: 2px; cursor: pointer; }
+  #controls button.on { background: #2b2620; color: #ece2cc; border-color: #2b2620; }
+  #controls input[type=range] { flex: 1; }
+  #controls #pval { min-width: 4.5em; font-variant-numeric: tabular-nums; }
+  #svg-host { display: none; }
+  #svg-out svg { display: block; width: 1800px; height: 1000px; }
+</style>
+<script src="p5.min.js"></script>
+<script src="p5.svg.js"></script>
+<script src="thumbs.js"></script>
+<script>
+// p5.js-svg 1.5.1 with p5 1.9.4: p5's Renderer2D constructor is a transpiled class whose super() call
+// returns a NEW object (Reflect.construct); p5.svg calls it with .call(this) and keeps `this`, which
+// then has no drawingContext. Wrap RendererSVG so the object p5 actually built is the one returned.
+(function () {
+  const OrigSVG = p5.RendererSVG;
+  p5.RendererSVG = function (elt, pInst, isMain) {
+    const R2D = p5.Renderer2D; let made = null;
+    const Tmp = function () { made = R2D.apply(this, arguments); return made; };
+    Tmp.prototype = R2D.prototype; p5.Renderer2D = Tmp;
+    let shell; try { shell = new OrigSVG(elt, pInst, isMain); } finally { p5.Renderer2D = R2D; }
+    Object.setPrototypeOf(made, OrigSVG.prototype);
+    made.isSVG = shell.isSVG; made.svg = shell.svg;
+    // svgcanvas has no ctx.ellipse (p5 1.9 draws circle/arc through it): sample the arc into a path
+    const ctxProto = Object.getPrototypeOf(made.drawingContext);
+    if (!ctxProto.ellipse) ctxProto.ellipse = function (x, y, rx, ry, rot, a0, a1, ccw) {
+      rot = rot || 0; if (a0 === undefined) { a0 = 0; a1 = Math.PI * 2; }
+      const TAU = Math.PI * 2; let span = a1 - a0;
+      if (!ccw) { if (span < 0) span += TAU * Math.ceil(-span / TAU); if (span > TAU) span = TAU; }
+      else { if (span > 0) span -= TAU * Math.ceil(span / TAU); if (span < -TAU) span = -TAU; }
+      const n = Math.max(8, Math.ceil(Math.abs(span) / TAU * 72));
+      for (let i = 0; i <= n; i++) { const a = a0 + span * i / n, px = rx * Math.cos(a), py = ry * Math.sin(a);
+        const X = x + px * Math.cos(rot) - py * Math.sin(rot), Y = y + px * Math.sin(rot) + py * Math.cos(rot);
+        if (i === 0) this.moveTo(X, Y); else this.lineTo(X, Y); }
+    };
+    return made;
+  };
+  p5.RendererSVG.prototype = OrigSVG.prototype;
+})();
+</script>
+</head>
+<body>
+<div id="host"></div>
+<div id="controls">
+  <button data-stage="1">色带</button>
+  <button data-stage="2">框</button>
+  <button data-stage="3">箭头</button>
+  <button data-stage="4">白描</button>
+  <button data-stage="5">文字</button>
+  <button data-stage="6">图例</button>
+  <input type="range" id="scrub" min="0" max="1000" value="1000">
+  <span id="pval">p = 1.000</span>
+  <button id="export">export SVG</button>
+</div>
+<div id="svg-host"></div>
+<div id="svg-out"></div>
+<pre id="err"></pre>
+<script>
+window.addEventListener('error', e => { document.getElementById('err').textContent += e.message + ' @' + (e.filename||'').split('/').pop() + ':' + e.lineno + '\n'; });
+// ALIGN Figure 1, v6 — one program, in the project's own ink on silk (D-14). Every mark is {stage, x, draw(g, t)};
+// everything is decided at build time (rects, routes, stroke outlines, label widths); draw() only replays.
+// Round 4 applied D-16 (a stroke is one filled outline), D-17 (audit 2 px), D-18 (✗ → ✓ pairs), D-19 (band 3 grows),
+// D-20 (no eave overhang), D-21 (one caption), D-22 (the full name and "without diffusion" in the title strip).
+// Round 5 applies D-16 amended (directional dashes; long shafts thin along the body), D-23 (a) (the booklet among the motifs),
+// D-24 (the stop line), D-25 (the scene splits: mountain on the source side, the bridge passage on the work side; icon lines 2.0 / 1.4 at α 0.6),
+// D-26 (the eye at icon size, opaque; A8 stops at its edges).
+// Round 6 applies D-17's closing checklist: role tags (executor · Claude, reviewer · Codex, user at the eye); the seal's three exits each a short
+// labelled path (accept → the 赭石 repaint lane, overrule = the 花青 dashed line entering, revert → the kept versions in band 3); a 淡墨 line from
+// 卷宗 down to 版本 "one version per round"; the rule panel's hierarchy swapped (the stop line bold at 28, the DRIVE/ACQUIT sentence a 22 note);
+// the brush profile in three pieces visible at 1× (thin start → 顿 · even body · tapered 收笔); each arrow ends in a short filled brush wedge;
+// the row of eleven kept versions in band 3's right. Also D-28 (the inspected window at the reference's size) and D-29 (a seal mark at the colophon's foot).
+const W = 1800, H = 1000;
+const KAI = 'ALIGKai', SANS = 'ALIGSans', SEAL = 'ALIGSeal';       // @font-face aliases; the SVG export rewrites them to full stacks
+const STACK = {
+  ALIGKai:  '"Kaiti SC","STKaiti","Noto Serif SC","Songti SC","Noto Serif CJK SC",serif',
+  ALIGSans: '"Optima","Seravek","Gill Sans","Source Sans 3","Fira Sans","Lucida Grande","Helvetica Neue",Helvetica,"Kaiti SC","STKaiti","Noto Serif SC",sans-serif',
+  ALIGSeal: '"Heiti SC","PingFang SC","Songti SC","Noto Sans SC",sans-serif',
+};
+const STAGES = ['色带', '框', '箭头', '白描', '文字', '图例'];
+const S0 = 52, S1 = 36, S2 = 28, S3 = 22;                          // four sizes (D-04 amended in D-14); nothing smaller than 22
+// palette by role — nothing coloured for decoration
+const INK = [43, 38, 32], OCHRE = [168, 112, 62], HUAQING = [74, 106, 134], ZHUSHA = [176, 57, 42], SHILV = [95, 154, 110];
+const C = { page: '#d9cbb0', band: '#cdbc9c', paper: '#ece2cc', ink: '#2b2620', ochre: '#a8703e', huaqing: '#4a6a86', zhusha: '#b0392a', baiwen: [239, 230, 208] };
+const rgba = (c, a) => 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + (+a).toFixed(3) + ')';
+const KIND = {   // the four line kinds by meaning: width, colour, alpha, head length (D-17: audit 2 px, α 0.6, head 10)
+  flow:     { w: 5,   col: INK,     a: 1,    head: 18 },
+  repaint:  { w: 3.5, col: OCHRE,   a: 1,    head: 12 },
+  overrule: { w: 3,   col: HUAQING, a: 1,    head: 12, dash: [10, 8] },
+  audit:    { w: 2,   col: INK,     a: 0.6,  head: 10 },
+};
+
+const T = {};            // p5.Image by name (the one raster), loaded once from a data URI
+let MARKS = null;        // built once, shared by the canvas and the SVG instance
+let P = 1;               // progress 0..1
+let main = null, svgInst = null;
+
+// ---------- one seeded PRNG (seed 7), consumed at build in unit order; draw() never calls it (G-01) ----------
+let seed = 7;
+function R() { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const smoothstep = t => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
+function hash1(i) { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+function noise1(x) { const i = Math.floor(x), f = x - i, u = f * f * (3 - 2 * f); return hash1(i) * (1 - u) + hash1(i + 1) * u; }   // 0..1, pure
+
+// ---------- geometry helpers ----------
+const dist = (a, b) => Math.hypot(b[0] - a[0], b[1] - a[1]);
+function resample(pts, step) {   // linear, ~step px, keeps every input vertex
+  step = step || 2; const out = [pts[0]];
+  for (let i = 1; i < pts.length; i++) { const d = dist(pts[i-1], pts[i]), n = Math.max(1, Math.round(d / step));
+    for (let k = 1; k <= n; k++) out.push([pts[i-1][0] + (pts[i][0] - pts[i-1][0]) * k / n, pts[i-1][1] + (pts[i][1] - pts[i-1][1]) * k / n]); }
+  return out;
+}
+function smooth(pts, step) {     // Catmull-Rom through sparse hand-set points, sampled at ~step px
+  step = step || 2; if (pts.length < 3) return resample(pts, step);
+  const P = [pts[0]].concat(pts, [pts[pts.length - 1]]), out = [pts[0]];
+  for (let i = 1; i < P.length - 2; i++) { const p0 = P[i-1], p1 = P[i], p2 = P[i+1], p3 = P[i+2];
+    const n = Math.max(2, Math.round(dist(p1, p2) / step));
+    for (let k = 1; k <= n; k++) { const t = k / n, t2 = t * t, t3 = t2 * t;
+      out.push([0.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3),
+                0.5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3)]); } }
+  return out;
+}
+function fillet(pts, r) {        // a routed path with right-angle corners: round each interior corner with radius r
+  if (pts.length < 3) return pts; const out = [pts[0]];
+  for (let i = 1; i < pts.length - 1; i++) { const a = pts[i-1], b = pts[i], c = pts[i+1];
+    const la = dist(a, b), lc = dist(b, c), rr = Math.min(r, la / 2, lc / 2);
+    const p = [b[0] + (a[0] - b[0]) / la * rr, b[1] + (a[1] - b[1]) / la * rr], q = [b[0] + (c[0] - b[0]) / lc * rr, b[1] + (c[1] - b[1]) / lc * rr];
+    out.push(p); for (let k = 1; k < 6; k++) { const t = k / 6, u = 1 - t; out.push([u*u*p[0] + 2*u*t*b[0] + t*t*q[0], u*u*p[1] + 2*u*t*b[1] + t*t*q[1]]); } out.push(q); }
+  out.push(pts[pts.length - 1]); return out;
+}
+function arcPts(cx, cy, r, a0, a1, n) { const out = []; n = n || Math.max(8, Math.round(Math.abs(a1 - a0) * r / 2)); for (let i = 0; i <= n; i++) { const a = a0 + (a1 - a0) * i / n; out.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } return out; }
+function circlePts(cx, cy, r) { return arcPts(cx, cy, r, 0, Math.PI * 2); }
+function bezPts(p0, p1, p2, p3, n) { const out = []; for (let i = 0; i <= n; i++) { const t = i / n, u = 1 - t; out.push([u*u*u*p0[0] + 3*u*u*t*p1[0] + 3*u*t*t*p2[0] + t*t*t*p3[0], u*u*u*p0[1] + 3*u*u*t*p1[1] + 3*u*t*t*p2[1] + t*t*t*p3[1]]); } return out; }
+function polyLen(pts) { let L = 0; for (let i = 1; i < pts.length; i++) L += dist(pts[i-1], pts[i]); return L; }
+function pointAt(pts, s) {
+  let acc = 0;
+  for (let i = 1; i < pts.length; i++) { const d = dist(pts[i-1], pts[i]);
+    if (s <= acc + d || i === pts.length - 1) { const f = d ? clamp((s - acc) / d, 0, 1) : 0; return [pts[i-1][0] + (pts[i][0] - pts[i-1][0]) * f, pts[i-1][1] + (pts[i][1] - pts[i-1][1]) * f]; }
+    acc += d; }
+  return pts[pts.length - 1];
+}
+function subPoly(pts, a, b) {
+  const out = [pointAt(pts, a)]; let acc = 0;
+  for (let i = 1; i < pts.length; i++) { const d = dist(pts[i-1], pts[i]); if (acc + d > a && acc + d < b) out.push(pts[i]); acc += d; }
+  out.push(pointAt(pts, b)); return out;
+}
+
+// ---------- the brush (D-16): one stroke = one filled outline — the two offset edges of its width profile, closed ----------
+// pts: a dense polyline (~2 px). Width factor along t = s/L by style:
+//  'brush' — thin 起笔 swelling to 1.6 w, settling to an even body, then 收笔 to 0.08 w;
+//            a corner carries a short press. The arrow's final mark is a filled brush wedge.
+//  'heng'  — a 横 (the eave): a 顿 at both ends (1.15), a body at 0.95 ±6 %
+//  'line'  — icon line work: 1.12 → 1.0 at the start, ±8 % body, a 收笔 to 0.55
+//  'pie'   — 撇: the head's two strokes, the ✗: 0.85 → 1.25 over the first 22 % (pressed at the apex), then a taper to 0.20
+//  'dash'  — one dash of the overrule: a 顿 over its first fifth, then a taper to a point — a brush mark travelling one way (D-16 amended)
+//  'rule'  — constant width, stroked, no head or tail (panel outlines, ticks, the scrub bar, the ledger rule) — not the tell
+function strokeGeom(pts, w, style, corners) {
+  const n = pts.length; if (n < 2) return null; const s = [0]; let L = 0;
+  for (let i = 1; i < n; i++) { L += dist(pts[i-1], pts[i]); s.push(L); }
+  if (L < 0.3) return null;
+  const ph = R() * 200, tiny = L < 6;
+  const nz = sv => clamp((noise1(ph + sv * 0.03) - 0.5) / 0.3, -1, 1);
+  const prof = (t, sv) => {
+    if (tiny) return 1;
+    if (style === 'heng') { let m = 0.95; if (t < 0.10) m = 1.15 - 0.20 * smoothstep(t / 0.10); else if (t > 0.90) m = 0.95 + 0.20 * smoothstep((t - 0.90) / 0.10); return m * (1 + 0.06 * nz(sv)); }
+    if (style === 'line') { let m = 1; if (t < 0.12) m = 1.12 - 0.12 * smoothstep(t / 0.12); else if (t > 0.80) m = 1 - 0.45 * smoothstep((t - 0.80) / 0.20); return m * (1 + 0.08 * nz(sv)); }
+    if (style === 'pie') return (t < 0.22 ? 0.85 + 0.40 * smoothstep(t / 0.22) : 1.25 - 1.05 * smoothstep((t - 0.22) / 0.78)) * (1 + 0.05 * nz(sv));
+    if (style === 'dash') { const td = Math.min(w * 1.2, L * 0.5) / L;   // the 顿 is a length of ink (≈ 1.2 w), then a taper to a point: one direction (D-16 amended, round 5)
+      return t < td ? 0.75 + 0.40 * smoothstep(t / td) : 1.15 - 1.05 * smoothstep((t - td) / (1 - td)); }
+    // D-17 (5): three readable pressures, including on the short panel-to-panel strokes.
+    const dun = Math.min(L * 0.30, w * 5), td = dun / L, tail = Math.min(L * 0.30, w * 8), tt = 1 - tail / L;
+    let m = 1;
+    if (t < td * 0.4) m = 0.24 + 1.36 * smoothstep(t / (td * 0.4));
+    else if (t < td) m = 1.6 - 0.6 * smoothstep((t - td * 0.4) / (td * 0.6));
+    else if (t > tt) m = 1 - 0.92 * smoothstep((t - tt) / (1 - tt));
+    if (corners) for (const sc of corners) { const d = sv - sc; let b = 0;   // the 折: a press over the fold
+      if (d < 0 && d > -2 * w) b = smoothstep((d + 2 * w) / (2 * w)); else if (d >= 0 && d < 3 * w) b = 1 - smoothstep(d / (3 * w));
+      m *= 1 + 0.35 * b; }
+    return m;
+  };
+  const left = [], right = [], hw = [], dir = [];
+  for (let i = 0; i < n; i++) {
+    const a = pts[Math.max(0, i - 1)], b = pts[Math.min(n - 1, i + 1)];
+    let dx = b[0] - a[0], dy = b[1] - a[1]; const d = Math.hypot(dx, dy) || 1; dx /= d; dy /= d;
+    const h = Math.max(0.12, w * prof(s[i] / L, s[i]) / 2); hw.push(h); dir.push([dx, dy]);
+    left.push([pts[i][0] - dy * h, pts[i][1] + dx * h]); right.push([pts[i][0] + dy * h, pts[i][1] - dx * h]);
+  }
+  // round caps: the 顿 is a pressed, rounded start; the tail's cap is as small as its taper
+  const cap = (i, back) => { const c = pts[i], r = hw[i], a0 = Math.atan2(dir[i][1], dir[i][0]) + (back ? Math.PI : 0); return arcPts(c[0], c[1], r, a0 - Math.PI / 2, a0 + Math.PI / 2, 6); };
+  return { pts, s, L, left, right, hw, cap0: cap(0, true), cap1: cap(n - 1, false) };
+}
+// fillGeom draws the stroke's outline between arclengths a and b (flat cuts inside the stroke, the round caps only at its true ends);
+// breaks: arclength ranges left blank where the stroke passes behind another — the profile runs on as if unbroken
+function fillGeomRange(cx, gm, css, a, b) {
+  const edgeAt = (sv, side) => { let k = 0; while (k + 1 < gm.s.length && gm.s[k + 1] <= sv) k++;
+    if (k + 1 >= gm.s.length) return side[gm.s.length - 1];
+    const s0 = gm.s[k], s1 = gm.s[k+1], f = s1 > s0 ? (sv - s0) / (s1 - s0) : 0; return [side[k][0] + (side[k+1][0] - side[k][0]) * f, side[k][1] + (side[k+1][1] - side[k][1]) * f]; };
+  const i0 = gm.s.findIndex(v => v > a), i1raw = gm.s.findIndex(v => v >= b), i1 = i1raw < 0 ? gm.s.length : i1raw;   // interior vertices strictly inside (a, b)
+  const startCap = a <= 0, endCap = b >= gm.L;
+  cx.beginPath();
+  if (startCap) { const c0 = gm.cap0; cx.moveTo(c0[0][0], c0[0][1]); for (let i = 1; i < c0.length; i++) cx.lineTo(c0[i][0], c0[i][1]); }
+  else { const eR = edgeAt(a, gm.right), eL = edgeAt(a, gm.left); cx.moveTo(eR[0], eR[1]); cx.lineTo(eL[0], eL[1]); }
+  if (i0 >= 0) for (let i = i0; i < i1; i++) cx.lineTo(gm.left[i][0], gm.left[i][1]);
+  if (endCap) for (const p of gm.cap1) cx.lineTo(p[0], p[1]);
+  else { const eL = edgeAt(b, gm.left), eR = edgeAt(b, gm.right); cx.lineTo(eL[0], eL[1]); cx.lineTo(eR[0], eR[1]); }
+  if (i0 >= 0) for (let i = i1 - 1; i >= i0; i--) cx.lineTo(gm.right[i][0], gm.right[i][1]);
+  cx.closePath(); cx.fillStyle = css; cx.fill();
+}
+function fillGeom(cx, gm, css, lim, breaks) {   // lim: arclength to draw up to (undefined = whole stroke)
+  const end = lim === undefined ? gm.L : Math.min(lim, gm.L); if (end <= 0) return;
+  let ranges = [[0, end]];
+  for (const [ga, gb] of (breaks || [])) { const next = [];
+    for (const [a, b] of ranges) { if (b <= ga || a >= gb) next.push([a, b]); else { if (a < ga) next.push([a, ga]); if (b > gb) next.push([gb, b]); } }
+    ranges = next; }
+  for (const [a, b] of ranges) if (b - a > 0.2) fillGeomRange(cx, gm, css, a, b);
+}
+function strokeRule(cx, pts, w, css, close) {   // 'rule': one constant-width stroked path
+  cx.save(); cx.lineCap = 'butt'; cx.lineJoin = 'miter'; cx.lineWidth = w; cx.strokeStyle = css;
+  cx.beginPath(); cx.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) cx.lineTo(pts[i][0], pts[i][1]); if (close) cx.closePath(); cx.stroke(); cx.restore();
+}
+// brush(pts, w, colour, alpha, style) → a draw(g) closure; the stroke is fixed here at build
+function brush(pts, w, col, alpha, style) {
+  alpha = alpha === undefined ? 1 : alpha; style = style || 'line'; const css = rgba(col, alpha);
+  if (style === 'rule') return pts.length < 2 ? () => {} : g => strokeRule(g.drawingContext, pts, w, css);
+  const gm = strokeGeom(pts, w, style); return gm ? g => fillGeom(g.drawingContext, gm, css) : () => {};
+}
+// D-25: icon line work at 2.0 px primary and 1.4 px 淡墨 secondary, α 0.6 (from 1.6 / 1.1 at α 0.45 — 淡墨 on silk has less contrast than grey on white);
+// the icons' inner hierarchy (1.2–1.4 in v4) scales with them. Panel rules, band outlines and the eave wash keep their own values.
+const IW = 1.25, PALE_A = 0.6, ICON_W = 2.0, PALE_W = 1.4;
+const ink   = (pts, w, style) => brush(pts, w === undefined ? ICON_W : w * IW, INK, 1, style || 'line');       // primary line work
+const pale  = (pts, w, style) => brush(pts, w === undefined ? PALE_W : w * IW, INK, PALE_A, style || 'line');   // 淡墨 secondary
+const rule  = (x1, y1, x2, y2, w, col, a) => brush([[x1, y1], [x2, y2]], w, col || INK, a === undefined ? 1 : a, 'rule');
+function rectRule(x, y, w, h, sw, col, a) { const css = rgba(col || INK, a === undefined ? 1 : a), pts = [[x, y], [x + w, y], [x + w, y + h], [x, y + h]]; return g => strokeRule(g.drawingContext, pts, sw, css, true); }
+// A short loaded brush wedge: bowed shoulders, an uneven heel, one pointed exit.
+// Its outline is sampled once at build and stays a filled path in both renderers.
+function head(apex, ang, L, w, col, alpha) {
+  L *= 0.85;
+  const p = (x, y) => [apex[0] + L * (x * Math.cos(ang) - y * Math.sin(ang)), apex[1] + L * (x * Math.sin(ang) + y * Math.cos(ang))];
+  const outline = bezPts(p(0, 0), p(-0.30, -0.04), p(-0.66, -0.44), p(-1, -0.38), 8)
+    .concat(bezPts(p(-1, -0.38), p(-0.82, -0.12), p(-0.96, 0.18), p(-0.85, 0.34), 8).slice(1))
+    .concat(bezPts(p(-0.85, 0.34), p(-0.57, 0.34), p(-0.18, 0.06), p(0, 0), 8).slice(1));
+  return g => fillPoly(g, outline, rgba(col, alpha));
+}
+// arrow(path, kind, opts): shaft (one filled stroke per run, its 收笔 into the apex), optional label gaps (a new stroke starts after the gap),
+// breaks (the stroke passes behind another: a blank, the profile unbroken), dashes of varied length and gap, a 折 at every corner, head at the target edge.
+// opts.noHead: a joining stroke (the accept exit runs into the repaint lane). Returns draw(g, t): the shaft grows along its length with t; the head is laid at t = 1.
+function arrow(path, kind, opts) {
+  const k = KIND[kind]; opts = opts || {};
+  const pts = resample(fillet(path, 8), 2), L = polyLen(pts);
+  const corners = []; { let acc = 0; for (let i = 1; i < path.length - 1; i++) { acc += dist(path[i-1], path[i]); corners.push(acc - 1.7 - 3.4 * (i - 1)); } }   // arclength of each fold on the filleted path
+  let on = [[0, L]];
+  if (k.dash) { on = []; let s = opts.phase || 0;
+    while (s < L - 4) { const len = k.dash[0] * (0.8 + 0.5 * R()), gap = k.dash[1] * (0.6 + 1.0 * R()); on.push([s, Math.min(s + len, L)]); s += len + gap; }
+    const last = on[on.length - 1]; if (!last) on.push([0, L]); else if (L - last[1] < 5) last[1] = L; else on.push([Math.max(last[1] + 5, L - k.dash[0]), L]); }
+  for (const gp of (opts.gaps || [])) { const next = [];
+    for (const [a, b] of on) { if (b <= gp[0] || a >= gp[1]) next.push([a, b]); else { if (a < gp[0]) next.push([a, gp[0]]); if (b > gp[1]) next.push([gp[1], b]); } }
+    on = next; }
+  const css = rgba(k.col, k.a);
+  const runs = on.map(([a, b]) => ({ a, b, gm: strokeGeom(subPoly(pts, a, b), k.w, k.dash ? 'dash' : 'brush', corners.filter(c => c > a + 1 && c < b - 1).map(c => c - a)),
+    breaks: (opts.breaks || []).filter(([x, y]) => y > a && x < b).map(([x, y]) => [Math.max(0, x - a), Math.min(b - a, y - a)]) })).filter(r => r.gm);
+  const tip = pts[pts.length - 1], prev = pointAt(pts, L - 3), ang = Math.atan2(tip[1] - prev[1], tip[0] - prev[0]);
+  const hd = opts.noHead ? () => {} : head(tip, ang, k.head, k.w, k.col, k.a);
+  return function (g, t) { const lim = t * L, cx = g.drawingContext;
+    for (const r of runs) { if (r.a >= lim) break; fillGeom(cx, r.gm, css, lim >= r.b ? undefined : lim - r.a, r.breaks); }
+    if (t >= 1) hd(g); };
+}
+
+// ---------- text, fills ----------
+function txt(g, s, x, y, size, face, style, col, align) {
+  g.push(); g.noStroke(); g.fill(col); g.textFont(face); g.textSize(size); g.textStyle(style || g.NORMAL);
+  g.textAlign(align || g.LEFT, g.BASELINE); g.text(s, x, y); g.pop();
+}
+function measure(g, s, size, face, style) { g.push(); g.textFont(face); g.textSize(size); g.textStyle(style || g.NORMAL); const w = g.textWidth(s); g.pop(); return w; }
+function fillRect(g, x, y, w, h, col, r) { g.push(); g.noStroke(); g.fill(col); g.rect(x, y, w, h, r || 0); g.pop(); }
+function fillPoly(g, pts, col) { g.push(); g.noStroke(); g.fill(col); g.beginShape(); for (const p of pts) g.vertex(p[0], p[1]); g.endShape(g.CLOSE); g.pop(); }
+function dot(g, x, y, r, col) { g.push(); g.noStroke(); g.fill(col); g.circle(x, y, r * 2); g.pop(); }
+// a drawn 22-px brush arrow (shaft 2 px, head 8) at a baseline — set in a measured gap between two text runs, never the glyph U+2192
+function inlineArrow(x, baseline, size, col) { const ay = baseline - size * 0.32, aw = size, k = size / 22;
+  const shaft = brush(resample([[x, ay], [x + aw, ay]], 1.5), 2 * k, col, 1, 'brush'), hd = head([x + aw, ay], 0, 8 * k, 2 * k, col, 1); return g => { shaft(g); hd(g); }; }
+function textArrow(g, left, right, x, y, size, face, style, col, align) {
+  const wl = measure(g, left, size, face, style), wr = measure(g, right, size, face, style), gap = 8 * size / 22, aw = size, total = wl + gap + aw + gap + wr;
+  const x0 = align === 'right' ? x - total : align === 'center' ? x - total / 2 : x;
+  const ar = inlineArrow(x0 + wl + gap, y, size, INK);   // the drawn arrow is ink whatever the text's colour string
+  return { w: total, draw: g => { txt(g, left, x0, y, size, face, style, col); ar(g); txt(g, right, x0 + wl + gap + aw + gap, y, size, face, style, col); } };
+}
+// the drawn marks: ✗ — a 撇 and a 捺 in 朱砂, 16 × 16; ✓ — one 石绿 stroke, a short down-stroke into a long up-stroke, 18 × 16; centred at (cx, cy)
+function crossMark(cx, cy) { const a = brush(resample([[cx + 8, cy - 8], [cx - 8, cy + 8]], 1.5), 2.6, ZHUSHA, 1, 'pie'), b = brush(resample([[cx + 8, cy + 8], [cx - 8, cy - 8]], 1.5), 2.6, ZHUSHA, 1, 'pie'); return g => { a(g); b(g); }; }
+function checkMark(cx, cy, k) { k = k || 1; return brush(smooth([[cx - 9 * k, cy - 1 * k], [cx - 4 * k, cy + 7 * k], [cx - 1 * k, cy + 6 * k], [cx + 9 * k, cy - 8 * k]]), 2.8 * k, SHILV, 1, 'brush'); }
+
+// ---------- 白描 icons — ink line work, 2.0 px primary and 1.4 px 淡墨 secondary (D-25), every line a brush stroke ----------
+const rel = (x, y, w, h) => pts => pts.map(p => [x + p[0] * w, y + p[1] * h]);
+// the framed 绢 window: paper, ink frame, 淡墨 inner rule 3 px inset (裱边), and the same mountain sketch wherever a rendered picture is meant
+function win(x, y, w, h, mode) {
+  const f = [g => fillRect(g, x, y, w, h, C.paper), rectRule(x, y, w, h, ICON_W), rectRule(x + 3, y + 3, w - 6, h - 6, PALE_W, INK, PALE_A)];
+  const m = rel(x + 5, y + 5, w - 10, h - 10);
+  if (mode === 'full') { f.push(ink(smooth(m([[0.14, 0.82], [0.30, 0.42], [0.40, 0.22], [0.50, 0.42], [0.58, 0.66]]))));
+    f.push(ink(smooth(m([[0.46, 0.80], [0.62, 0.50], [0.72, 0.34], [0.84, 0.56], [0.92, 0.78]]))));
+    f.push(ink(smooth(m([[0.04, 0.76], [0.14, 0.60], [0.22, 0.54], [0.30, 0.68]])), 1.3));
+    f.push(pale(smooth(m([[0.08, 0.90], [0.30, 0.87], [0.50, 0.91], [0.70, 0.87], [0.94, 0.90]])))); }
+  if (mode === 'faint') f.push(pale(smooth(m([[0.14, 0.82], [0.30, 0.42], [0.40, 0.22], [0.50, 0.42], [0.58, 0.66]]))));
+  if (mode === 'peak') f.push(ink(smooth(m([[0.16, 0.86], [0.38, 0.30], [0.52, 0.18], [0.66, 0.44], [0.86, 0.86]])), 1.4));
+  if (mode === 'bridge') bridgeSketch(f, m, w >= 80);       // the work's own passage (D-25); the railing only where the window is wide enough to carry it
+  if (mode === 'arch') archDetail(f, m);                    // the crown of the bridge at 2× — Render's detail frame
+  return g => f.forEach(d => d(g));
+}
+// D-25: the frame recurs, the scene splits — source-side windows keep the three-peak mountain; every work-side picture is one passage of the 武汉 scroll,
+// the arched bridge with boats, at each panel's own view. m maps the unit square onto the picture area.
+function bridgeSketch(f, m, full) {
+  f.push(ink(smooth(m([[0.04, 0.60], [0.22, 0.34], [0.50, 0.24], [0.78, 0.34], [0.96, 0.60]]))));                                // the deck
+  f.push(ink(smooth(m([[0.16, 0.92], [0.30, 0.56], [0.50, 0.46], [0.70, 0.56], [0.84, 0.92]])), 1.4));                           // the arch
+  f.push(ink(resample(m([[0.04, 0.60], [0.04, 0.92]])), 1.2)); f.push(ink(resample(m([[0.96, 0.60], [0.96, 0.92]])), 1.2));     // abutments
+  if (full) { f.push(pale(smooth(m([[0.10, 0.50], [0.26, 0.26], [0.50, 0.16], [0.74, 0.26], [0.90, 0.50]]))));                     // the rail
+    for (const [px, py] of [[0.18, 0.37], [0.34, 0.27], [0.50, 0.24], [0.66, 0.27], [0.82, 0.37]]) f.push(pale(resample(m([[px, py], [px, py - 0.09]])), 1.2)); }   // posts
+  f.push(ink(smooth(m([[0.40, 0.84], [0.44, 0.92], [0.58, 0.92], [0.62, 0.83]])), 1.3)); f.push(ink(resample(m([[0.51, 0.85], [0.51, 0.68]])), 1.1));   // a boat under the arch, its mast down
+  f.push(pale(smooth(m([[0.06, 0.97], [0.30, 0.94], [0.50, 0.98], [0.72, 0.94], [0.94, 0.97]]))));                                // water
+}
+function archDetail(f, m) {   // the deck's crown, its rail and posts, the arch's top — what the 淡墨 box on Render's window marks
+  f.push(ink(smooth(m([[0.02, 0.50], [0.30, 0.30], [0.50, 0.26], [0.70, 0.30], [0.98, 0.50]]))));                                // deck
+  f.push(pale(smooth(m([[0.02, 0.30], [0.30, 0.10], [0.50, 0.06], [0.70, 0.10], [0.98, 0.30]]))));                                // rail
+  for (const px of [0.10, 0.24, 0.38, 0.52, 0.66, 0.80, 0.94]) { const py = 0.26 + Math.pow((px - 0.5) / 0.5, 2) * 0.24; f.push(pale(resample(m([[px, py], [px, py - 0.20]])), 1.2)); }
+  f.push(ink(smooth(m([[0.06, 0.98], [0.30, 0.74], [0.50, 0.68], [0.70, 0.74], [0.94, 0.98]])), 1.4));                           // the arch's top
+}
+function frame(x, y, w, h) { const f = [g => fillRect(g, x, y, w, h, C.paper), rectRule(x, y, w, h, ICON_W)]; return g => f.forEach(d => d(g)); }
+// a code sheet: page rule, </> as three ink strokes at the top, 淡墨 ruled lines of unequal length, two indented
+function codeSheet(x, y, w, h, lines) {
+  const f = [g => fillRect(g, x, y, w, h, C.paper), rectRule(x, y, w, h, ICON_W)];
+  const cy = y + h * 0.15, s = Math.min(w, h) * 0.13;
+  f.push(ink(resample([[x + w * 0.38, cy - s], [x + w * 0.26, cy], [x + w * 0.38, cy + s]])));
+  f.push(ink(resample([[x + w * 0.57, cy - s * 1.15], [x + w * 0.43, cy + s * 1.15]])));
+  f.push(ink(resample([[x + w * 0.62, cy - s], [x + w * 0.74, cy], [x + w * 0.62, cy + s]])));
+  const lens = [0.70, 0.50, 0.62, 0.82, 0.44, 0.66], ind = [0, 1, 1, 0, 0, 1], y0 = y + h * 0.33, dy = (h * 0.62) / lines;
+  for (let i = 0; i < lines; i++) { const xx = x + w * 0.14 + (ind[i] ? w * 0.12 : 0), yy = y0 + i * dy; f.push(pale([[xx, yy], [xx + w * lens[i], yy]], 1.1, 'rule')); }
+  return g => f.forEach(d => d(g));
+}
+function booklet(x, y, k) {   // stitched booklet 60 × 42 (× k): cover rule, four 淡墨 stitch dots down the left edge, a 淡墨 ruled table (3 × 4) inside
+  k = k || 1; const bw = 60 * k, bh = 42 * k;
+  const f = [g => fillRect(g, x, y, bw, bh, C.paper), rectRule(x, y, bw, bh, ICON_W)];
+  for (const dy of [8, 16, 26, 34]) f.push(pale([[x + 4 * k, y + dy * k], [x + 4 * k, y + (dy + 2.5) * k]], 1.6, 'rule'));
+  const tx = x + 12 * k, ty = y + 7 * k, tw = 42 * k, th = 28 * k;
+  f.push(rectRule(tx, ty, tw, th, PALE_W, INK, PALE_A));
+  for (let c = 1; c < 3; c++) f.push(pale([[tx + tw * c / 3, ty], [tx + tw * c / 3, ty + th]], 1.1, 'rule'));
+  for (let r = 1; r < 4; r++) f.push(pale([[tx, ty + th * r / 4], [tx + tw, ty + th * r / 4]], 1.1, 'rule'));
+  return g => f.forEach(d => d(g));
+}
+function motif(kind, x, y, k) {   // 44-px cell (× k): 屋顶 · 舟 · 树 · 水 — several owners, each a module of the painting
+  k = k || 1; const m = rel(x, y, k, k), f = [];
+  if (kind === 'roof') { f.push(ink(smooth(m([[7, 13], [12, 11], [32, 11], [37, 13]]))));                       // ridge
+    f.push(ink(smooth(m([[2, 24], [8, 27], [36, 27], [42, 24]]))));                                                 // eave
+    f.push(ink(resample(m([[11, 12], [6, 26]])), 1.3)); f.push(ink(resample(m([[33, 12], [38, 26]])), 1.3));       // slopes
+    f.push(pale(m([[11, 27], [11, 40]]), 1.1, 'rule')); f.push(pale(m([[33, 27], [33, 40]]), 1.1, 'rule')); f.push(pale(m([[8, 40], [36, 40]]), 1.1, 'rule')); }
+  if (kind === 'boat') { f.push(ink(smooth(m([[4, 27], [8, 33], [22, 35], [36, 33], [41, 26]]))));                  // hull
+    f.push(ink(resample(m([[7, 28], [39, 28]])), 1.3));                                                             // gunwale
+    f.push(ink(resample(m([[21, 28], [21, 8]])), 1.4)); f.push(ink(resample(m([[15, 12], [28, 11]])), 1.2));        // mast, yard
+    f.push(pale(smooth(m([[2, 39], [10, 37.5], [20, 39.5], [32, 37.5], [42, 39]])))); }                            // waterline
+  if (kind === 'tree') { f.push(ink(smooth(m([[21, 43], [22, 33], [20, 24], [22, 14], [21, 6]]))));                 // trunk
+    f.push(ink(smooth(m([[21, 28], [15, 22], [8, 18]])), 1.3)); f.push(ink(smooth(m([[21, 22], [28, 16], [36, 12]])), 1.3)); f.push(ink(smooth(m([[21, 16], [16, 10], [13, 4]])), 1.2)); }
+  if (kind === 'water') for (const yy of [12, 23, 34]) f.push(pale(smooth(m([[4, yy + 1], [12, yy - 2], [22, yy + 1], [32, yy - 2], [40, yy + 1]])), 1.2));
+  return g => f.forEach(d => d(g));
+}
+function executorIcon(top, tip, kb) {   // a 毛笔 held diagonally over a keyboard; the tip touches the keyboard's top edge
+  const d = [tip[0] - top[0], tip[1] - top[1]], L = Math.hypot(d[0], d[1]), u = [d[0] / L, d[1] / L], nrm = [-u[1], u[0]];
+  const at = (s, o) => [top[0] + u[0] * s + nrm[0] * o, top[1] + u[1] * s + nrm[1] * o];
+  const hs = L * 0.70, f = [];
+  f.push(ink(resample([at(0, -2.5), at(hs, -2.5)]))); f.push(ink(resample([at(0, 2.5), at(hs, 2.5)])));   // handle
+  f.push(ink([at(0, -2.5), at(0, 2.5)], 1.6, 'rule')); f.push(ink([at(hs, -2.5), at(hs, 2.5)], 1.4, 'rule'));         // cap, ferrule
+  f.push(ink(smooth([at(hs, -2.5), at(hs + 8, -4.8), at(hs + 18, -3.2), at(L, 0)])));                              // 笔头 left edge
+  f.push(ink(smooth([at(hs, 2.5), at(hs + 8, 4.8), at(hs + 18, 3.2), at(L, 0)])));                                 // 笔头 right edge
+  for (const o of [-2, 0, 2]) f.push(pale(resample([at(hs + 4, o), at(hs + 16, o * 0.6)]), 1.0));                 // hatching
+  f.push(rectRule(kb[0], kb[1], 114, 28, ICON_W));                                                                     // keyboard
+  for (const yy of [7, 14, 21]) for (let i = 0; i < 12; i++) f.push(pale([[kb[0] + 7 + i * 8.5, kb[1] + yy], [kb[0] + 12 + i * 8.5, kb[1] + yy]], 1.1, 'rule'));
+  return g => f.forEach(d => d(g));
+}
+function rulerIcon(x, y) {   // ruler 120 × 14 at (x, y) with 淡墨 ticks every 8 px, and a divider (两脚规) standing on it
+  const f = [g => fillRect(g, x, y, 120, 14, C.paper), rectRule(x, y, 120, 14, ICON_W)];
+  for (let i = 1; i < 15; i++) f.push(pale([[x + i * 8, y], [x + i * 8, y + (i % 5 === 0 ? 9 : 5)]], 1.1, 'rule'));
+  const hx = x + 60, hy = y - 28;
+  f.push(ink(resample([[hx, hy], [hx - 14, y]]))); f.push(ink(resample([[hx, hy], [hx + 14, y]])));
+  f.push(ink(circlePts(hx, hy - 1, 3), 1.4)); f.push(pale(resample([[hx - 8, y - 12], [hx + 8, y - 12]])));
+  return g => f.forEach(d => d(g));
+}
+function figureScene(y0) {   // the blind reviewer: a standing figure with a magnifier over a framed 绢 window; a struck-out code sheet beside. y0 = the panel's top
+  const Y = y => y0 + y;
+  const f = [win(1044, Y(108), 70, 48, 'bridge')];                                                                  // D-28: the reference glyph's size; the reviewer looks at the render at the size the source is shown
+  f.push(ink(circlePts(1002, Y(82), 9)));                                                                         // head
+  f.push(ink(smooth([[994, Y(92)], [990, Y(116)], [982, Y(138)], [978, Y(154)]]))); f.push(ink(smooth([[1010, Y(92)], [1014, Y(116)], [1022, Y(138)], [1026, Y(154)]])));   // robe
+  f.push(ink(smooth([[994, Y(92)], [1002, Y(95)], [1010, Y(92)]]), 1.3)); f.push(ink(smooth([[978, Y(154)], [1002, Y(156)], [1026, Y(154)]]), 1.4));                  // collar, hem
+  f.push(pale(smooth([[1002, Y(98)], [1001, Y(124)], [1000, Y(152)]])));                                              // fold
+  f.push(ink(smooth([[1010, Y(100)], [1022, Y(102)], [1034, Y(108)]]))); f.push(ink(circlePts(1035, Y(109), 2.5), 1.2));   // arm, hand
+  f.push(ink(circlePts(1079, Y(136), 18), 2.0));                                                                       // lens, over the arch
+  const dx = 1037 - 1079, dy = Y(110) - Y(136), dl = Math.hypot(dx, dy);
+  f.push(ink(resample([[1079 + dx / dl * 18, Y(136) + dy / dl * 18], [1037, Y(110)]]), 2.4));                          // handle, to the hand
+  f.push(codeSheet(1128, Y(72), 42, 54, 4));
+  f.push(pale(resample([[1128, Y(72)], [1170, Y(126)]]), 2)); f.push(pale(resample([[1170, Y(72)], [1128, Y(126)]]), 2));   // struck out
+  return g => f.forEach(d => d(g));
+}
+// D-26: the eye is an actor at icon size — 52 × 34, opaque in the band's tint, so the flow stops at its left edge and resumes at its right
+const EYE_RX = 26, EYE_RY = 17;
+const eyePts = (cx, cy) => bezPts([cx - EYE_RX, cy], [cx - EYE_RX * 0.46, cy - EYE_RY * 1.55], [cx + EYE_RX * 0.46, cy - EYE_RY * 1.55], [cx + EYE_RX, cy], 18)
+  .concat(bezPts([cx + EYE_RX, cy], [cx + EYE_RX * 0.46, cy + EYE_RY * 1.55], [cx - EYE_RX * 0.46, cy + EYE_RY * 1.55], [cx - EYE_RX, cy], 18).slice(1));
+function eyeIcon(cx, cy) { const f = [ink(eyePts(cx, cy), 2.0), ink(circlePts(cx, cy, 8.5)), pale(arcPts(cx, cy, 12, Math.PI * 1.15, Math.PI * 1.85), 1.2)];   // almond, iris, a 淡墨 lid line
+  return g => { f.forEach(d => d(g)); dot(g, cx, cy, 4, C.ink); }; }
+function scrollIcon(x, y) {   // the hand-scroll 150 × 60 at (x, y): two rollers with knobs, the open sheet with 淡墨 rules and colophon columns
+  const f = [g => fillRect(g, x + 10, y + 6, 130, 48, C.paper)];
+  for (const rx of [x, x + 140]) { f.push(g => fillRect(g, rx, y, 10, 60, C.paper)); f.push(rectRule(rx, y, 10, 60, ICON_W)); f.push(ink(circlePts(rx + 5, y - 3, 2.5), 1.2)); f.push(ink(circlePts(rx + 5, y + 63, 2.5), 1.2)); }
+  f.push(pale([[x + 10, y + 6], [x + 140, y + 6]], 1.1, 'rule')); f.push(pale([[x + 10, y + 54], [x + 140, y + 54]], 1.1, 'rule'));
+  const cols = [[x + 25, 5], [x + 43, 4], [x + 61, 3], [x + 79, 5]];
+  for (const [cx, n] of cols) for (let i = 0; i < n; i++) f.push(pale([[cx - 4, y + 13 + i * 6.5], [cx + 4, y + 13 + i * 6.5]], 1.2, 'rule'));
+  f.push(g => { fillRect(g, x + 20.5, y + 42, 9, 9, rgba(ZHUSHA, 0.86), 1); fillRect(g, x + 21, y + 43, 7.5, 7.5, rgba(ZHUSHA, 0.25), 1); });   // D-29: the verdict written in — a seal at the colophon's foot
+  f.push(pale(smooth([[x + 99, y + 46], [x + 107, y + 32], [x + 117, y + 27], [x + 127, y + 32], [x + 135, y + 46]])));   // the picture at the scroll's start: the arch — the work's passage, on the work's side (D-25)
+  f.push(pale(resample([[x + 96, y + 47], [x + 138, y + 47]]), 1.1));
+  return g => f.forEach(d => d(g));
+}
+// D-19: the replayable page — a scroll unrolling leftward, wide enough to carry a drawing, the scrub bar under it (the scrubber is a round-2 hold)
+function replayIcon(x, y) {   // sheet x..x+200 × y..y+40; roller at the right; scrub bar at y+50
+  const sx = x, ex = x + 200, sy = y, ey = y + 40;
+  const f = [g => fillRect(g, sx, sy, ex - sx, ey - sy, C.paper), g => fillRect(g, ex, sy - 6, 10, 52, C.paper), rectRule(ex, sy - 6, 10, 52, ICON_W)];
+  f.push(ink(circlePts(ex + 5, sy - 9, 2.5), 1.2)); f.push(ink(circlePts(ex + 5, ey + 9, 2.5), 1.2));
+  f.push(ink(resample([[sx + 6, sy], [ex, sy]]), 1.3)); f.push(ink(resample([[sx + 6, ey], [ex, ey]]), 1.3));
+  f.push(ink(smooth([[sx + 6, sy], [sx, sy + 4], [sx - 3, sy + 20], [sx + 1, sy + 36], [sx + 8, ey]]), 1.3));            // the curl
+  // the passage on the sheet (D-25): a bridgehead house at the left, the arched bridge with its boat in the middle, a second boat coming, water
+  const m = rel(sx + 14, sy + 5, ex - sx - 28, ey - sy - 10);
+  f.push(ink(smooth(m([[0.02, 0.44], [0.06, 0.30], [0.16, 0.30], [0.20, 0.44]])), 1.3)); f.push(ink(resample(m([[0.04, 0.46], [0.18, 0.46]])), 1.2));   // a roof at the bridgehead
+  f.push(pale(resample(m([[0.07, 0.46], [0.07, 0.84]])), 1.1, 'rule')); f.push(pale(resample(m([[0.15, 0.46], [0.15, 0.84]])), 1.1, 'rule'));
+  f.push(ink(smooth(m([[0.20, 0.84], [0.30, 0.42], [0.50, 0.26], [0.70, 0.42], [0.80, 0.84]]))));                                // the deck
+  f.push(ink(smooth(m([[0.28, 0.92], [0.36, 0.62], [0.50, 0.52], [0.64, 0.62], [0.72, 0.92]])), 1.4));                           // the arch
+  f.push(pale(smooth(m([[0.24, 0.72], [0.32, 0.32], [0.50, 0.14], [0.68, 0.32], [0.76, 0.72]]))));                                // the rail
+  for (const [px, py] of [[0.30, 0.42], [0.40, 0.31], [0.50, 0.26], [0.60, 0.31], [0.70, 0.42]]) f.push(pale(resample(m([[px, py], [px, py - 0.12]])), 1.2));
+  f.push(ink(smooth(m([[0.44, 0.84], [0.46, 0.93], [0.56, 0.93], [0.58, 0.84]])), 1.3)); f.push(ink(resample(m([[0.51, 0.85], [0.51, 0.66]])), 1.1));   // the boat under the arch
+  f.push(ink(smooth(m([[0.86, 0.80], [0.89, 0.90], [0.97, 0.90], [0.99, 0.79]])), 1.2)); f.push(ink(resample(m([[0.93, 0.81], [0.93, 0.56]])), 1.1));   // a boat coming
+  f.push(pale(smooth(m([[0.02, 0.96], [0.30, 0.93], [0.55, 0.97], [0.80, 0.93], [0.99, 0.96]]))));                                // water
+  f.push(pale([[sx, ey + 10], [ex, ey + 10]], 2, 'rule'));
+  return g => { f.forEach(d => d(g)); dot(g, sx + 120, ey + 10, 3.5, C.ink); };
+}
+// D-19/D-25: three frames of one passage, the same window each time and more in it — v1: ground and the arch's contour · v6: the bridge, one boat · v11: bridge, boats, trees, water, figures
+function versionsIcon(xs, y) {   // frames 68 × 46 at each x in xs
+  const f = [];
+  for (const x of xs) f.push(frame(x, y, 68, 46));
+  const ground = x => pale(resample([[x + 5, y + 34], [x + 63, y + 34]]));
+  const contour = x => ink(smooth([[x + 12, y + 34], [x + 20, y + 22], [x + 34, y + 18], [x + 48, y + 22], [x + 56, y + 34]]), 1.4);   // v1: the arch alone — the passage's first line (D-25)
+  const bridge = x => { const a = ink(smooth([[x + 12, y + 34], [x + 20, y + 22], [x + 34, y + 18], [x + 48, y + 22], [x + 56, y + 34]])),
+    b = ink(resample([[x + 10, y + 16], [x + 58, y + 16]]), 1.3), c = ink(resample([[x + 15, y + 16], [x + 15, y + 27]]), 1.1), d = ink(resample([[x + 53, y + 16], [x + 53, y + 27]]), 1.1);
+    return g => { a(g); b(g); c(g); d(g); }; };
+  const boat = (x, bx) => { const a = ink(smooth([[bx, y + 37], [bx + 3, y + 40.5], [bx + 11, y + 40.5], [bx + 14, y + 36.5]]), 1.3), b = ink(resample([[bx + 7, y + 37], [bx + 7, y + 30]]), 1.1); return g => { a(g); b(g); }; };
+  const tree = (x, tx) => { const a = ink(resample([[tx, y + 34], [tx, y + 22]]), 1.3), b = ink(smooth([[tx, y + 27], [tx - 4, y + 23], [tx - 6, y + 19]]), 1.1), c = ink(smooth([[tx, y + 25], [tx + 4, y + 21], [tx + 6, y + 17]]), 1.1); return g => { a(g); b(g); c(g); }; };
+  const water = x => pale(smooth([[x + 5, y + 41], [x + 15, y + 40], [x + 27, y + 42], [x + 41, y + 40], [x + 55, y + 42], [x + 63, y + 41]]));
+  const figure = (x, fx) => { const a = ink(circlePts(fx, y + 11.5, 1.5), 1.1), b = ink(resample([[fx, y + 13], [fx, y + 16]]), 1.3); return g => { a(g); b(g); }; };
+  f.push(ground(xs[0])); f.push(contour(xs[0]));
+  f.push(ground(xs[1])); f.push(bridge(xs[1])); f.push(boat(xs[1], xs[1] + 44));
+  f.push(bridge(xs[2])); f.push(boat(xs[2], xs[2] + 44)); f.push(boat(xs[2], xs[2] + 7)); f.push(tree(xs[2], xs[2] + 8)); f.push(tree(xs[2], xs[2] + 60));
+  f.push(water(xs[2])); for (const fx of [26, 34, 42]) f.push(figure(xs[2], xs[2] + fx));
+  return g => f.forEach(d => d(g));
+}
+// D-19/D-25: Render's small frames — the process sheet as a grid, and a detail at 2× of the bridge's crown (marked on the window in 淡墨)
+function renderFrames(wx, wy, ww, wh, y) {
+  const f = [win(wx, wy, ww, wh, 'bridge')];
+  const dx = wx + 5 + (ww - 10) * 0.34, dy = wy + 5 + (wh - 10) * 0.10, dw = (ww - 10) * 0.32, dh = (wh - 10) * 0.42;      // the detail's region on the window: the bridge's crown
+  f.push(rectRule(dx, dy, dw, dh, PALE_W, INK, PALE_A));
+  const gx = wx + ww / 2 - 52, px = wx + ww / 2 + 8;                                                                       // two frames 44 × 26, a 16-px gutter, centred under the window
+  f.push(frame(gx, y, 44, 26));
+  for (let c = 1; c < 4; c++) f.push(pale([[gx + 11 * c, y], [gx + 11 * c, y + 26]], 1.1, 'rule')); f.push(pale([[gx, y + 13], [gx + 44, y + 13]], 1.1, 'rule'));
+  for (let r = 0; r < 2; r++) for (let c = 0; c < 4; c++) f.push(pale(resample([[gx + 11 * c + 3, y + 13 * r + 9], [gx + 11 * c + 8, y + 13 * r + 9 - (r * 4 + c) * 0.6]]), 1.0));
+  f.push(win(px, y, 44, 26, 'arch'));                                                                                    // the crown at 2×
+  return g => f.forEach(d => d(g));
+}
+
+// ---------- panels — paper inside an ink outline with an eave (a 横, no overhang — D-20) and its 淡墨 wash; families step / gate / store ----------
+function panel(g, sp) {   // sp: {x, y, w, h, family, title, sub, subFace}
+  const { x, y, w, h } = sp, f = [];
+  f.push(gg => fillRect(gg, x, y, w, h, C.paper));
+  for (const [dy, a] of [[2, 0.14], [5, 0.08], [8, 0.04]]) f.push(rule(x + 1.5, y + dy, x + w - 1.5, y + dy, 2, INK, a));     // the shadow under a 檩
+  f.push(rule(x, y, x, y + h, 1.5)); f.push(rule(x + w, y, x + w, y + h, 1.5)); f.push(rule(x, y + h, x + w, y + h, 1.5));     // sides and bottom
+  f.push(brush(resample([[x, y], [x + w, y]]), 3, INK, 1, 'heng'));                                                              // the eave: a 横 from corner to corner
+  if (sp.family === 'gate') f.push(rectRule(x + 4, y + 4, w - 8, h - 8, 1.1));                                                   // the double rule
+  if (sp.family === 'store') f.push(rule(x + 1.5, y + 10, x + w - 1.5, y + 10, 1.1, INK, 0.45));                                 // the ledger head
+  const title = sp.title, sub = sp.sub, subFace = sp.subFace || SANS, subStyle = sp.subStyle, titleFace = sp.titleFace || KAI, titleStyle = sp.titleStyle;
+  const tbl = sp.titleBl || 32, sbl = sp.subBl || 56;
+  return gg => { f.forEach(d => d(gg));
+    if (title) txt(gg, title, x + w / 2, y + tbl, S2, titleFace, titleStyle, C.ink, gg.CENTER);
+    if (sub) txt(gg, sub, x + w / 2, y + sbl, S3, subFace, subStyle, rgba(INK, sp.subAlpha === undefined ? 0.85 : sp.subAlpha), gg.CENTER); };
+}
+// the seal: square 120, centre SEALC, rotated −2°; field, uneven paste, three rim nibbles where the silk shows, the 白文 「判」
+const SEALH = 60, SEALROT = -2 * Math.PI / 180;
+let SEALC = [1332, 407];
+function sealCorners() { const c = Math.cos(SEALROT), s = Math.sin(SEALROT); return [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([px, py]) => [SEALC[0] + (px * SEALH) * c - (py * SEALH) * s, SEALC[1] + (px * SEALH) * s + (py * SEALH) * c]); }
+function sealEdgeAtY(side, y) { const k = sealCorners(); const [a, b] = side === 'left' ? [k[3], k[0]] : [k[1], k[2]]; const t = (y - a[1]) / (b[1] - a[1]); return a[0] + (b[0] - a[0]) * t; }
+function sealEdgeAtX(x) { const k = sealCorners(); const [a, b] = [k[0], k[1]]; const t = (x - a[0]) / (b[0] - a[0]); return a[1] + (b[1] - a[1]) * t; }
+function sealBottomAtX(x) { const k = sealCorners(); const [a, b] = [k[3], k[2]]; const t = (x - a[0]) / (b[0] - a[0]); return a[1] + (b[1] - a[1]) * t; }
+function sealDraw(g) {
+  g.push(); g.translate(SEALC[0], SEALC[1]); g.rotate(SEALROT); g.noStroke();
+  g.fill(rgba(ZHUSHA, 0.86)); g.rect(-60, -60, 120, 120, 2);
+  g.fill(rgba(ZHUSHA, 0.25)); g.rect(-56 - 3, -56 + 2, 112, 112, 2);
+  g.fill(C.band); g.circle(-60 + 36, -60, 8); g.circle(60, -60 + 72, 6); g.circle(-60 + 90, 60, 10);
+  g.fill(rgba(C.baiwen, 0.94)); g.stroke(rgba(C.baiwen, 0.94)); g.strokeWeight(2); g.strokeJoin(g.ROUND);
+  g.textFont(SEAL); g.textSize(84); g.textStyle(g.BOLD); g.textAlign(g.CENTER, g.CENTER); g.text('判', 0, 2);
+  g.pop();
+}
+
+// ---------- layout constants — vertical rhythm 174 / 282 / 190 (D-19: band 3 grew 26 px, found in the title strip's and bands 1–2's paddings) ----------
+const BAND = [{ y: 82,  h: 174, x: 240, w: 1520, bl: 114, kai: '1 · 研究与规格', en: ['Study', 'Specification'] },
+              { y: 268, h: 282, x: 240, w: 1520, bl: 300, kai: '2 · 盲评循环', en: ['Blind Loop'] },
+              { y: 598, h: 184, x: 240, w: 920,  bl: 630, kai: '3 · 产出', en: ['Outputs'] }];
+const P1 = { y: 124, h: 122 }, P2 = { y: 312, h: 190 }, P3 = { y: 642, h: 126 };
+const SEAM_Y = 560, VERSION_Y = 578;                             // two separate record/return lanes in the 2/3 gap
+const F1 = P1.y + P1.h / 2, F2 = P2.y + P2.h / 2;              // flow y in bands 1 and 2: 185, 407
+const AUDIT_Y = P2.y + P2.h + 14, REPAINT_Y = AUDIT_Y + 20, OVERRULE_Y = BAND[1].y + 18;   // 516, 536, 286
+const PANELS = {
+  style:   { x: 262,  w: 200, ...P1, family: 'step',  title: '风格源', sub: 'style windows' },
+  study:   { x: 506,  w: 200, ...P1, family: 'step',  title: '研究',   sub: '取其法,不取其景', subFace: KAI },
+  spec:    { x: 750,  w: 280, ...P1, family: 'step',  title: '规格',   sub: 'plan.md · interfaces.md' },
+  modules: { x: 262,  w: 176, ...P2, family: 'step',  title: '模块',   sub: 'module owners' },
+  program: { x: 482,  w: 186, ...P2, family: 'step',  title: '程序',   sub: 'no image model' },
+  render:  { x: 712,  w: 196, ...P2, family: 'step',  title: '渲染',   sub: 'views · process' },
+  review:  { x: 952,  w: 240, ...P2, family: 'gate',  title: '盲评',   sub: 'reviewer · Codex', subAlpha: 0.45 },
+  wiki:    { x: 1555, w: 190, ...P2, family: 'store', title: '卷宗',   sub: 'wiki · decisions' },
+  replay:  { x: 262,  w: 290, ...P3, family: 'step',  title: '可重放页', sub: 'replayable page' },
+  versions:{ x: 596,  w: 260, ...P3, family: 'step',  title: '版本',   sub: 'versions' },
+  rule:    { x: 1200, w: 560, y: 598, h: 184, family: 'step' },   // D-17 (4): stop is the main sentence
+};
+for (const k in PANELS) { const p = PANELS[k]; p.r = p.x + p.w; p.b = p.y + p.h; p.cx = p.x + p.w / 2; }
+SEALC = [1332, F2];
+const REF = { x: 1560, y: BAND[0].y + 86, w: 70, h: 50 };   // the reference glyph (a framed 绢 window), band 1's right
+const EYE = { cx: 1480, cy: F2 };                           // the eye on A8
+const LEGEND_Y = [792, 832, 872, 912];
+const STRIP = { x: 240, y: 794, w: 1520, h: 146 };          // the existing single raster showcase
+const CAPTION_BL = 980;
+
+// D-17 (6): the row of kept versions in band 3's right — eleven 14-px squares, 8-px gutters, centred in the empty half (856–1160)
+function versionRow() { const s = 14, gap = 8, n = 11, w = n * s + (n - 1) * gap, cx = (PANELS.versions.r + BAND[2].x + BAND[2].w) / 2, x0 = cx - w / 2;
+  const xs = []; for (let i = 0; i < n; i++) xs.push(x0 + i * (s + gap)); return { xs, s, y: P3.y + 48, cx }; }
+
+// ---------- the figure, as a stroke list ----------
+function buildMarks(g) {
+  seed = 7;
+  const M = [];
+  const add = (stage, x, draw) => M.push({ stage, x, draw });
+  const whole = (stage, x, fn) => add(stage, x, (g, t) => { if (t >= 1) fn(g); });
+
+  // ---- 1 色带 ---- frame; title strip (D-22: the full name, the tagline with "without diffusion"); the three bands with their numbered 楷 titles
+  { const fr = rectRule(0.5, 0.5, W - 1, H - 1, 1, INK, 0.45); whole(0, 0, g => fr(g)); }
+  { const TB = 60, name = 'Agentic Loop Image GeneratioN', tag = 'the program is the painting · without diffusion, anywhere';
+    const wA = measure(g, 'ALIGN', S0, SANS, g.BOLD), wDot = measure(g, ':', S2, SANS), wN = measure(g, name, S2, SANS), wK = measure(g, '程序即画', S1, KAI);
+    const xDot = 40 + wA + 4, xN = xDot + wDot + 16, xK = xN + wN + 30, xT = xK + wK + 30;
+    whole(0, 40, g => { txt(g, 'ALIGN', 40, TB, S0, SANS, g.BOLD, C.ink); txt(g, ':', xDot, TB, S2, SANS, g.NORMAL, C.ink); txt(g, name, xN, TB, S2, SANS, g.NORMAL, C.ink);
+      txt(g, '程序即画', xK, TB - 2, S1, KAI, g.NORMAL, C.ink); txt(g, tag, xT, TB - 2, S3, SANS, g.ITALIC, rgba(INK, 0.8)); }); }
+  for (const b of BAND) {
+    const outline = rectRule(b.x, b.y, b.w, b.h, 1, INK, 0.5);
+    const kw = measure(g, b.kai, S1, KAI), ex = b.x + 22 + kw + 24;
+    const en = b.en.length === 2 ? textArrow(g, b.en[0], b.en[1], ex, b.bl, S3, SANS, g.NORMAL, C.ink) : { draw: gg => txt(gg, b.en[0], ex, b.bl, S3, SANS, gg.NORMAL, C.ink) };
+    whole(0, b.x, g => { fillRect(g, b.x, b.y, b.w, b.h, C.band); outline(g); txt(g, b.kai, b.x + 22, b.bl, S1, KAI, g.NORMAL, C.ink); en.draw(g); });
+  }
+
+  // ---- 2 框 ---- panels (fill, eave and wash, outline, family rule, title, subtitle); the seal; the two glyph placeholders
+  for (const k of ['style', 'study', 'spec', 'modules', 'program', 'render', 'review', 'wiki', 'replay', 'versions']) { const p = PANELS[k], d = panel(g, p); whole(1, p.x, d); }
+  whole(1, REF.x, g => fillRect(g, REF.x, REF.y, REF.w, REF.h, C.paper));
+  whole(1, SEALC[0] - SEALH, g => sealDraw(g));
+  whole(1, EYE.cx - EYE_RX, g => fillPoly(g, eyePts(EYE.cx, EYE.cy), C.band));
+
+  // ---- 3 箭头 ---- A1…A8 the main flow, then A9 repaint, A10 overrule, A11 audit; heads at panel edges
+  const Pn = PANELS;
+  const sealL = sealEdgeAtY('left', F2), sealR = sealEdgeAtY('right', F2), sealT = sealEdgeAtX(SEALC[0]);
+  const flows = [
+    [[200, F1], [Pn.style.x, F1]], [[Pn.style.r, F1], [Pn.study.x, F1]], [[Pn.study.r, F1], [Pn.spec.x, F1]],
+    [[Pn.modules.r, F2], [Pn.program.x, F2]], [[Pn.program.r, F2], [Pn.render.x, F2]], [[Pn.render.r, F2], [Pn.review.x, F2]],
+    [[Pn.review.r, F2], [sealL, F2]],
+  ];
+  for (const f of flows) add(2, f[0][0], arrow(f, 'flow'));
+  // A8: the seal's right edge → the wiki, broken at the eye's edges (D-26): the flow passes through the user's look
+  add(2, sealR, arrow([[sealR, F2], [Pn.wiki.x, F2]], 'flow', { gaps: [[EYE.cx - EYE_RX - 6 - sealR, EYE.cx + EYE_RX + 6 - sealR]] }));
+  // A9 repaint (D-01): the wiki's bottom → down to the repaint lane → left → up into 程序's bottom; the label in a gap of the lane
+  const repaintLabel = 'program + wiki, never pixels', lw = measure(g, repaintLabel, S3, SANS, g.BOLDITALIC);
+  const rpDrop = 1700, rpRise = 575, labelX = 1000;
+  const repaintPath = [[rpDrop, Pn.wiki.b], [rpDrop, REPAINT_Y], [rpRise, REPAINT_Y], [rpRise, Pn.program.b]];
+  const sLabel = (REPAINT_Y - Pn.wiki.b) + (rpDrop - labelX);
+  // D-17 (2): accept joins the ochre repaint; overrule enters from the reference;
+  // revert returns in pale ink to the Versions panel, separately from the kept-version row.
+  const ACCEPT_X = 1300, REVERT_X = 1364, VROW = versionRow(), revertLand = [770, Pn.versions.y];
+  const brk = (sv, hw) => [sv - hw, sv + hw];
+  add(2, 10001, arrow(repaintPath, 'repaint', { gaps: [[sLabel - lw / 2 - 12, sLabel + lw / 2 + 12]], breaks: [brk((REPAINT_Y - Pn.wiki.b) + (rpDrop - REVERT_X), 6)] }));
+  add(2, 10004, arrow([[ACCEPT_X, sealBottomAtX(ACCEPT_X)], [ACCEPT_X, REPAINT_Y]], 'repaint', { noHead: true }));
+  add(2, 10005, arrow([[REVERT_X, sealBottomAtX(REVERT_X)], [REVERT_X, SEAM_Y], [revertLand[0], SEAM_Y], revertLand], 'audit'));
+  // A10 overrule: the reference glyph's bottom → through the 1/2 gap to band 2's top strip → left → down onto the seal's top
+  const refDrop = 1595;
+  add(2, 10002, arrow([[refDrop, REF.y + REF.h], [refDrop, OVERRULE_Y], [SEALC[0], OVERRULE_Y], [SEALC[0], sealT]], 'overrule', { phase: 3 }));
+  // A11 audit (D-01 amended, D-17): 盲评's bottom → the lane above the repaint's → right → up into the wiki's bottom, left of the repaint's drop; broken where the two exits pass
+  add(2, 10003, arrow([[1120, Pn.review.b], [1120, AUDIT_Y], [1640, AUDIT_Y], [1640, Pn.wiki.b]], 'audit',
+    { breaks: [brk((AUDIT_Y - Pn.review.b) + (ACCEPT_X - 1120), 6), brk((AUDIT_Y - Pn.review.b) + (REVERT_X - 1120), 6)] }));
+  // D-17 (3): the wiki records one version each round. Its outer drop clears the
+  // repaint lane; its landing stays right of revert, so the two record paths do not cross.
+  const VER_X = 820, VER_DROP = 1730, verLabel = 'one version per round', verLabelX = 1050;
+  const verWidth = measure(g, verLabel, S3, SANS), verLabelS = VERSION_Y - Pn.wiki.b + VER_DROP - verLabelX;
+  add(2, 10006, arrow([[VER_DROP, Pn.wiki.b], [VER_DROP, VERSION_Y], [VER_X, VERSION_Y], [VER_X, Pn.versions.y]], 'audit',
+    { gaps: [[verLabelS - verWidth / 2 - 12, verLabelS + verWidth / 2 + 12]] }));
+
+  // ---- 4 白描 ---- the ink-line icons, one per panel, and the actor glyphs
+  const KB = [76, F1 + 25];
+  whole(3, 76, executorIcon([96, F1 - 55], [150, F1 + 21], KB));
+  { const y = P1.y + 66, back = win(326, y, 62, 40, 'faint'), front = win(336, y + 8, 62, 40, 'full'); whole(3, 326, g => { back(g); front(g); }); }
+  whole(3, 546, rulerIcon(546, P1.y + 96));
+  { const y = P1.y + 66, back = booklet(852, y), front = booklet(866, y + 4); whole(3, 852, g => { back(g); front(g); }); }
+  whole(3, REF.x, win(REF.x, REF.y, REF.w, REF.h, 'full'));
+  // D-23 (a): the 规格 booklet recurs at the left of 模块's icon area — the contract the owners build against — the four motifs in a 2 × 2 of 40-px cells to its right
+  { const y = P2.y + 76, k = 40 / 44, bx = 282, gx = 330;
+    const ms = [booklet(bx, y + 30, 40 / 60), motif('roof', gx, y, k), motif('boat', gx + 48, y, k), motif('tree', gx, y + 48, k), motif('water', gx + 48, y + 48, k)];
+    whole(3, bx, g => ms.forEach(d => d(g))); }
+  whole(3, 540, codeSheet(540, P2.y + 74, 70, 96, 6));
+  whole(3, 764, renderFrames(764, P2.y + 68, 92, 62, P2.y + 142));
+  whole(3, 976, figureScene(P2.y));
+  whole(3, EYE.cx - EYE_RX, eyeIcon(EYE.cx, EYE.cy));
+  whole(3, 1575, scrollIcon(1575, P2.y + 88));
+  whole(3, 300, replayIcon(300, P3.y + 66));
+  whole(3, 612, versionsIcon([612, 692, 772], P3.y + 66));
+  // D-17 (6): band 3's right — a row of eleven kept versions, v1 … v11, the last filled
+  { const vr = VROW, f = [];
+    vr.xs.forEach((x, i) => { if (i === vr.xs.length - 1) f.push(g => fillRect(g, x, vr.y, vr.s, vr.s, C.ink)); else { f.push(g => fillRect(g, x, vr.y, vr.s, vr.s, C.paper)); f.push(rectRule(x, vr.y, vr.s, vr.s, 1.5)); } });
+    whole(3, vr.xs[0], g => f.forEach(d => d(g))); }
+
+  // ---- 5 文字 ---- arrow labels, glyph labels, tags, the outcomes line
+  whole(4, labelX - lw / 2, g => txt(g, repaintLabel, labelX, REPAINT_Y + 6, S3, SANS, g.BOLDITALIC, C.ochre, g.CENTER));
+  whole(4, 1400, g => txt(g, 'reference', 1548, REF.y + 32, S3, SANS, g.NORMAL, C.huaqing, g.RIGHT));
+  whole(4, 130, g => txt(g, 'executor · Claude', 130, KB[1] + 28 + 24, S3, SANS, g.NORMAL, rgba(INK, 0.45), g.CENTER));
+  // D-17 (2): one word at each exit, in the colour of its path — overrule beside the dashed drop above the seal, accept and revert beside their drops below it
+  whole(4, SEALC[0] + 12, g => txt(g, 'overrule', SEALC[0] + 12, OVERRULE_Y + 44, S3, SANS, g.ITALIC, C.huaqing));
+  whole(4, ACCEPT_X - 80, g => txt(g, 'accept', ACCEPT_X - 8, AUDIT_Y - 16, S3, SANS, g.ITALIC, C.ochre, g.RIGHT));
+  whole(4, REVERT_X + 8, g => txt(g, 'revert', REVERT_X + 8, AUDIT_Y - 16, S3, SANS, g.ITALIC, rgba(INK, 0.6)));
+  whole(4, verLabelX, g => txt(g, verLabel, verLabelX, VERSION_Y + 6, S3, SANS, g.NORMAL, rgba(INK, 0.6), g.CENTER));
+  // D-17 (6): v1 and v11 under the row's ends (marks, as D-19 was), the caption under the row
+  whole(4, VROW.xs[0], g => { txt(g, 'v1', VROW.xs[0] + VROW.s / 2, VROW.y + VROW.s + 24, S3, SANS, g.NORMAL, rgba(INK, 0.85), g.CENTER);
+    txt(g, 'v11', VROW.xs[VROW.xs.length - 1] + VROW.s / 2, VROW.y + VROW.s + 24, S3, SANS, g.NORMAL, rgba(INK, 0.85), g.CENTER);
+    txt(g, 'every version kept', VROW.cx, VROW.y + VROW.s + 56, S3, SANS, g.NORMAL, rgba(INK, 0.85), g.CENTER); });
+  whole(4, 1418, g => txt(g, 'user', EYE.cx, EYE.cy - EYE_RY - 9, S3, SANS, g.NORMAL, rgba(INK, 0.45), g.CENTER));
+  whole(4, 1000, g => txt(g, 'never the code', 1072, Pn.review.b - 16, S3, SANS, g.NORMAL, C.ink, g.CENTER));
+
+  // ---- 6 图例 ---- legend → rule panel (D-18: a ✗ → ✓ pair; D-24: the stop line) → the showcase strip → one caption (D-21)
+  const legend = ['flow', 'repaint', 'overrule', 'audit'];
+  legend.forEach((k, i) => { const y = LEGEND_Y[i], a = arrow([[44, y], [104, y]], k); add(5, i * 0.01, (g, t) => { if (t < 1) return; a(g, 1); txt(g, k, 118, y + 7, S3, SANS, g.NORMAL, C.ink); }); });
+  { const rp = PANELS.rule, d = panel(g, rp);
+    // D-17 (4): the stop line is the panel's main sentence at 28 — ✓ reviewer · ✓ user → stop — the two ✓ drawn 石绿 strokes, the → a drawn brush arrow;
+    // under it, at 22, the note that says why one tick cannot: a loop can DRIVE, cannot ACQUIT. The ✗ → ✓ example line is cut (its consequence is now drawn at the seal).
+    const mw = s => measure(g, s, S2, SANS, g.BOLD), k = S2 / S3;
+    const wTot = 26 * k + mw('reviewer') + 8 * k + mw('·') + 10 * k + 26 * k + mw('user') + 12 * k + S2 + 12 * k + mw('stop');
+    const stopLine = bl => { const cy = bl - 7 * k; let x = rp.cx - wTot / 2;
+      const c1 = checkMark(x + 9 * k, cy, k); x += 26 * k; const xA = x; x += mw('reviewer') + 8 * k; const xDot = x; x += mw('·') + 10 * k; const c2 = checkMark(x + 9 * k, cy, k); x += 26 * k; const xB = x; x += mw('user') + 12 * k;
+      const ar = inlineArrow(x, bl, S2, INK); x += S2 + 12 * k; const xC = x;
+      return gg => { c1(gg); txt(gg, 'reviewer', xA, bl, S2, SANS, gg.BOLD, C.ink); txt(gg, '·', xDot, bl, S2, SANS, gg.BOLD, C.ink); c2(gg); txt(gg, 'user', xB, bl, S2, SANS, gg.BOLD, C.ink); ar(gg); txt(gg, 'stop', xC, bl, S2, SANS, gg.BOLD, C.ink); }; };
+    const l1 = stopLine(rp.y + 86);
+    whole(5, 1, g => { d(g); l1(g); txt(g, 'a loop can DRIVE, cannot ACQUIT', rp.cx, rp.y + 132, S3, SANS, g.NORMAL, rgba(INK, 0.85), g.CENTER); }); }
+  { const mount = rectRule(STRIP.x - 4, STRIP.y - 4, STRIP.w + 8, STRIP.h + 8, 1, INK, 0.45), im = T.showcase;
+    const s = im ? STRIP.w / im.width : 1, sh = im ? Math.min(im.height, STRIP.h / s) : 0, sy = im ? (im.height - sh) / 2 : 0;   // uniform scale, clipped to the rectangle
+    whole(5, 2, g => { if (im) g.image(im, STRIP.x, STRIP.y, STRIP.w, sh * s, 0, sy, im.width, sh); mount(g); }); }
+  { const cap = textArrow(g, '清明上河图·武汉,11 版 11 轮盲评,评分 3.5', '7.0;另一卷 千里江山图·意临,12 版 11 轮', 240, CAPTION_BL, S3, KAI, g.NORMAL, C.ink);
+    whole(5, 3, g => cap.draw(g)); }
+
+  M.forEach((m, i) => m.i = i);
+  M.sort((a, b) => a.stage - b.stage || a.x - b.x || a.i - b.i);
+  window.LAYOUT = { sealL, sealR, sealT, lw };
+  return M;
+}
+
+// ---------- replay ----------
+function paint(g, p) {
+  g.background(C.page);
+  const eps = 1e-9;
+  for (let k = 0; k < 6; k++) {
+    let f = p * 6 - k; f = f > 1 - eps ? 1 : f < eps ? 0 : f;
+    if (f <= 0) break;
+    const ms = MARKS.filter(m => m.stage === k);
+    const v = f * ms.length, n = Math.floor(v + eps), frac = v - n;
+    for (let i = 0; i < ms.length; i++) { if (i < n) ms[i].draw(g, 1); else if (i === n && frac > eps) ms[i].draw(g, frac); }
+  }
+}
+function parseHash() {
+  const out = {}; const h = location.hash.replace(/^#/, '');
+  for (const kv of h.split('&')) { if (!kv) continue; const [k, v] = kv.split('='); out[k] = v === undefined ? true : decodeURIComponent(v); }
+  return out;
+}
+function setP(p, fromSlider) {
+  P = Math.min(1, Math.max(0, p));
+  if (!fromSlider) document.getElementById('scrub').value = Math.round(P * 1000);
+  document.getElementById('pval').textContent = 'p = ' + P.toFixed(3);
+  document.querySelectorAll('#controls [data-stage]').forEach(b => b.classList.toggle('on', Math.abs(P - (+b.dataset.stage) / 6) < 1e-6));
+  if (main) main.redraw();
+}
+function applyHash() {
+  const q = parseHash();
+  if (q.stage) setP((+q.stage) / 6);
+  else if (q.p !== undefined && q.p !== true) setP(+q.p);
+  if (q.seq) { for (const v of String(q.seq).split(',')) { const s = document.getElementById('scrub'); s.value = Math.round(+v * 1000); s.dispatchEvent(new Event('input')); } }
+  if (q.svg !== undefined) buildSVGSafe(false);
+}
+function buildSVG(download) {
+  const host = document.getElementById('svg-host'); host.innerHTML = '';
+  svgInst = new p5(s => {
+    s.setup = () => { s.createCanvas(W, H, s.SVG).parent(host); s.noLoop(); s.pixelDensity(1); paint(s, 1);
+      const el = host.querySelector('svg');
+      if (el) { el.setAttribute('viewBox', '0 0 ' + W + ' ' + H); el.setAttribute('width', W); el.setAttribute('height', H);
+        const sub = v => v.replace(/ALIGKai|ALIGSans|ALIGSeal/g, m => STACK[m]);
+        el.querySelectorAll('[font-family]').forEach(n => n.setAttribute('font-family', sub(n.getAttribute('font-family'))));
+        el.querySelectorAll('[style]').forEach(n => n.setAttribute('style', sub(n.getAttribute('style'))));
+        const out = document.getElementById('svg-out'); out.innerHTML = ''; out.appendChild(el.cloneNode(true)); }
+      if (download) s.save('ALIGN-figure1.svg');
+    };
+    s.draw = () => {};
+  });
+}
+function buildSVGSafe(download) { try { buildSVG(download); } catch (e) { document.getElementById('err').textContent += 'svg: ' + (e.stack || e) + '\n'; } }
+
+// ---------- start: fonts (each face with its final strings), then the canvas instance ----------
+const KAI_SAMPLE = '程序即画 1 · 研究与规格 2 · 盲评循环 3 · 产出 风格源 研究 规格 模块 程序 渲染 盲评 卷宗 可重放页 版本 取其法,不取其景 清明上河图·武汉,11 版 11 轮盲评,评分 3.5 7.0;另一卷 千里江山图·意临,12 版 11 轮';
+const SANS_SAMPLE = 'ALIGN · Agentic Loop Image Generation the program is the painting · without diffusion, anywhere Study Specification Blind Loop Outputs style windows plan.md · interfaces.md module owners no image model views · process reviewer · Codex never the code accept overrule revert user wiki · decisions replayable page versions v1 v11 every version kept one version per round program + wiki, never pixels reference executor · Claude flow repaint overrule audit a loop can DRIVE, cannot ACQUIT reviewer · user stop';
+const FONT_LOADS = [['36px ' + KAI, KAI_SAMPLE], ['28px ' + KAI, KAI_SAMPLE], ['22px ' + KAI, KAI_SAMPLE],
+  ['bold 52px ' + SANS, 'ALIGN'], ['28px ' + SANS, SANS_SAMPLE], ['22px ' + SANS, SANS_SAMPLE], ['italic 22px ' + SANS, SANS_SAMPLE], ['bold italic 22px ' + SANS, SANS_SAMPLE], ['bold 28px ' + SANS, SANS_SAMPLE],
+  ['bold 84px ' + SEAL, '判']];
+Promise.all(FONT_LOADS.map(([f, s]) => document.fonts.load(f, s).catch(() => null))).then(() => document.fonts.ready).then(() => {
+  main = new p5(s => {
+    s.preload = () => { for (const k in (window.THUMBS || {})) T[k] = s.loadImage(THUMBS[k]); };
+    s.setup = () => {
+      s.pixelDensity(1); s.createCanvas(W, H).parent('host'); s.noLoop();
+      MARKS = buildMarks(s);
+      document.getElementById('scrub').addEventListener('input', e => setP((+e.target.value) / 1000, true));
+      document.querySelectorAll('#controls [data-stage]').forEach(b => b.addEventListener('click', () => setP((+b.dataset.stage) / 6)));
+      document.getElementById('export').addEventListener('click', () => buildSVGSafe(true));
+      window.addEventListener('hashchange', applyHash);
+      applyHash(); setP(P);
+      document.body.dataset.ready = '1';
+    };
+    s.draw = () => paint(s, P);
+  });
+});
+</script>
+</body>
+</html>

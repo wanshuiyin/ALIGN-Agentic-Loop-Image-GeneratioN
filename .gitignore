@@ -1,0 +1,16 @@
+.DS_Store
+# personal reading material, not part of the release
+Looped_transformer.pdf
+gpt6.jpg
+# scratch renders inside examples
+examples/*/review/_*.png
+examples/*/review/*/stage*.png
+examples/*/review/*/g01_*.png
+
+# Drafts and working copies stay local; the release uses docs/assets/.
+/blog/
+/preview/
+/examples/qianli-process-codex/
+/examples/qingming-wuhan-codex/
+*.bak
+*.bak.*

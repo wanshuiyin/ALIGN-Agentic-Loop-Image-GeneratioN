@@ -1,0 +1,75 @@
+/* 毛笔字引擎 v2:以行楷字体为底稿,把每个字重新"写"成墨点堆积。
+   每个连通分量当作一"笔":沿主轴做粗细起伏与收锋,飞白顺主轴成丝,字内做 4–8% 骨架形变,字与字按 2–4 字一组起伏。
+   所有随机在此处定死;stampDabs 只回放。 */
+function makeBrushText(R){
+  const rr=(a,b)=>a+R()*(b-a), clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const cache=new Map();
+  function glyph(ch,font,size,SS){
+    const key=ch+font+size+SS; if(cache.has(key))return cache.get(key);
+    const px=size*SS, W=Math.ceil(px*1.3), H=Math.ceil(px*1.3);
+    const c=document.createElement('canvas'); c.width=W; c.height=H; const ctx=c.getContext('2d');
+    ctx.fillStyle='#000'; ctx.font=`${px}px ${font}`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(ch,W/2,H/2);
+    const d=ctx.getImageData(0,0,W,H).data, mask=new Uint8Array(W*H);
+    for(let i=0;i<W*H;i++)if(d[i*4+3]>110)mask[i]=1;
+    const D=new Float32Array(W*H); for(let i=0;i<W*H;i++)D[i]=mask[i]?1e6:0;
+    for(let y=1;y<H;y++)for(let x=1;x<W-1;x++){ const i=y*W+x; if(!mask[i])continue; D[i]=Math.min(D[i],D[i-1]+3,D[i-W]+3,D[i-W-1]+4,D[i-W+1]+4); }
+    for(let y=H-2;y>=0;y--)for(let x=W-2;x>=1;x--){ const i=y*W+x; if(!mask[i])continue; D[i]=Math.min(D[i],D[i+1]+3,D[i+W]+3,D[i+W-1]+4,D[i+W+1]+4); }
+    const comp=new Int32Array(W*H).fill(-1); const comps=[]; const stack=[];
+    for(let s=0;s<W*H;s++){ if(!mask[s]||comp[s]>=0)continue; const id=comps.length; const px_=[]; stack.push(s); comp[s]=id;
+      while(stack.length){ const i=stack.pop(); px_.push(i); const x=i%W,y=(i/W)|0; for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const nx=x+dx,ny=y+dy; if(nx<0||ny<0||nx>=W||ny>=H)continue; const j=ny*W+nx; if(mask[j]&&comp[j]<0){comp[j]=id;stack.push(j);} } }
+      let sx=0,sy=0; for(const i of px_){ sx+=i%W; sy+=(i/W)|0; } const n=px_.length, mx=sx/n, my=sy/n; let cxx=0,cyy=0,cxy=0;
+      for(const i of px_){ const x=i%W-mx, y=((i/W)|0)-my; cxx+=x*x; cyy+=y*y; cxy+=x*y; }
+      const ang=0.5*Math.atan2(2*cxy,cxx-cyy); const ux=Math.cos(ang), uy=Math.sin(ang);
+      let tmin=1e9,tmax=-1e9; for(const i of px_){ const t=(i%W-mx)*ux+(((i/W)|0)-my)*uy; if(t<tmin)tmin=t; if(t>tmax)tmax=t; }
+      let minX=W,minY=H; for(const i of px_){ const x=i%W,y=(i/W)|0; if(x<minX)minX=x; if(y<minY)minY=y; }
+      comps.push({px:px_,minX,minY,mx,my,ux,uy,tmin,tmax,len:tmax-tmin}); }
+    comps.sort((a,b)=>(a.minY+0.5*a.minX)-(b.minY+0.5*b.minX));
+    const out={W,H,D,comps}; cache.set(key,out); return out; }
+
+  /* opts: {text,x,y,size,font,colGap,perCol,dir,horizontal,lineH,over,ink,SS,warp,dry} */
+  function brushText(o){
+    const SS=o.SS||6, size=o.size, font=o.font, per=o.perCol||14, OVER=o.over||(size>24?7:5.5), INK=o.ink||0.8, warpA=(o.warp===undefined?0.012:o.warp)*size, DRY=o.dry===undefined?1:o.dry, TILT=o.tilt===undefined?0.8:o.tilt, WANDER=o.wander===undefined?0.5:o.wander;
+    const cols=[]; if(o.horizontal)cols.push([...o.text]); else for(let i=0;i<o.text.length;i+=per)cols.push([...o.text.slice(i,i+per)]);
+    const items=[]; let load=1, sinceReload=0, nextReload=Math.floor(rr(3,8)), tone=rr(0.86,1);
+    let gLeft=0, gMode=0;
+    cols.forEach((col,ci)=>{ let cx=o.x+(o.dir||-1)*ci*(o.colGap||0); let cy=o.y; const wph=rr(0,6.3), wamp=WANDER*rr(0.7,1.3);
+      col.forEach((ch,ri)=>{
+        if(gLeft<=0){ gLeft=Math.floor(rr(2,5)); gMode=gMode?0:1; }
+        gLeft--;
+        if(sinceReload>=nextReload){ load=rr(0.9,1); sinceReload=0; nextReload=Math.floor(rr(3,8)); tone=rr(0.86,1); }
+        if(ch===' '||ch==='·'){ if(ch==='·'){ items.push({x:cx,y:cy,ch,comps:[[{x:cx+(o.horizontal?size*0.45:0),y:cy+(o.horizontal?0:size*0.45),r:size*0.06,a:0.7}]],tone}); } const adv=size*(ch==='·'?0.75:0.3); if(o.horizontal)cx+=adv; else cy+=adv; return; }
+        const G=glyph(ch,font,size,SS); const sc=rr(0.97,1.03), tilt=rr(-TILT,TILT)*Math.PI/180, dx=rr(-0.4,0.4)*Math.min(1,WANDER*2)+(o.horizontal?0:Math.sin(ri*0.7+wph)*wamp), dy=rr(-0.3,0.3)*Math.min(1,WANDER*2)+(o.horizontal?Math.sin(ri*0.9+wph)*WANDER*0.4:0);
+        const inkG=gMode?0.86:1; const cosT=Math.cos(tilt), sinT=Math.sin(tilt);
+        const k1=rr(0.5,0.9)*Math.PI*2/size, k2=rr(0.5,0.9)*Math.PI*2/size, p1=rr(0,6.3), p2=rr(0,6.3), wa=warpA*rr(0.8,1.3);
+        let expect=0; for(const cp of G.comps)for(const i of cp.px){ const d=G.D[i]/3; if(d>=0.9){ const rs=d*0.86; expect+=Math.min(1,OVER/(Math.PI*rs*rs)); } }
+        const decay=rr(0.08,0.16)/Math.max(1,expect);
+        const comps=[];
+        G.comps.forEach((cp,k)=>{
+          const long=cp.len>size*SS*0.35;
+          const f=rr(0.8,1.6), ph=rr(0,6.3), nb=long?Math.floor(rr(1,4)):0, bris=[]; for(let b=0;b<nb;b++)bris.push({off:rr(-0.8,0.8),w:rr(0.35,0.7),t0:rr(0.1,0.6),t1:rr(0.5,1)});
+          const pts=cp.px.map(i=>{ const x=i%G.W,y=(i/G.W)|0; const t=((x-cp.mx)*cp.ux+(y-cp.my)*cp.uy-cp.tmin)/Math.max(1,cp.len), s=(-(x-cp.mx)*cp.uy+(y-cp.my)*cp.ux); return {x,y,d:G.D[i]/3,t,s}; }).filter(q=>q.d>=0.9).sort((a,b)=>a.t-b.t);
+          const dabs=[];
+          pts.forEach(q=>{ const t=clamp(q.t,0,1);
+            let wmod=1+(long?0.42:0.18)*Math.sin(t*Math.PI*2*f+ph); if(long&&t>0.72)wmod*=1-0.5*(t-0.72)/0.28;
+            wmod=clamp(wmod,0.55,1.45);
+            const rs=q.d*0.86*wmod, density=Math.min(1,OVER/(Math.PI*rs*rs)); if(R()>density)return;
+            load=Math.max(0.18,load-decay); const dry=(1-load)*DRY;
+            let gap=false; for(const b of bris){ if(t>b.t0&&t<b.t1&&Math.abs(q.s/Math.max(1,q.d)-b.off)<b.w*(0.3+dry))gap=true; }
+            if(gap&&dry>0.35&&R()<0.85*DRY)return; if(R()<dry*0.05*DRY)return;
+            const entry=t<0.1?1+(0.1-t)*1.4:1, pool=k===0&&t<0.08?1.1:1;
+            const ink=clamp(INK*inkG*tone*(0.62+0.38*load)*entry*rr(0.96,1.04),0.08,0.97), a=1-Math.pow(1-ink,1/OVER);
+            const r=rs/SS*rr(0.92,1.08)*pool;
+            let lx=(q.x-G.W/2)/SS*sc, ly=(q.y-G.H/2)/SS*sc; const wx=wa*Math.sin(ly*k1+p1), wy=wa*Math.sin(lx*k2+p2); lx+=wx; ly+=wy;
+            const X=cx+dx+lx*cosT-ly*sinT, Y=cy+dy+lx*sinT+ly*cosT;
+            dabs.push({x:X+rr(-0.1,0.1),y:Y+rr(-0.1,0.1),r:Math.max(0.3,r),a}); });
+          if(dabs.length)comps.push(dabs); });
+        sinceReload++; items.push({x:cx,y:cy,ch,comps,tone});
+        const adv=size*(o.lineH||1.08)*rr(0.985,1.015); if(o.horizontal)cx+=adv; else cy+=adv; }); });
+    return items; }
+
+  function stampDabs(g,dabs,ink){ const ctx=g.drawingContext; ctx.save();
+    for(const d of dabs){ ctx.beginPath(); if(d.r<1.1){ ctx.fillStyle=`rgba(${ink[0]},${ink[1]},${ink[2]},${d.a.toFixed(3)})`; ctx.arc(d.x,d.y,d.r,0,Math.PI*2); ctx.fill(); }
+      else { const bleed=d.r*1.18; const gr=ctx.createRadialGradient(d.x,d.y,0,d.x,d.y,bleed); gr.addColorStop(0,`rgba(${ink[0]},${ink[1]},${ink[2]},${d.a.toFixed(3)})`); gr.addColorStop(0.62,`rgba(${ink[0]},${ink[1]},${ink[2]},${(d.a*0.8).toFixed(3)})`); gr.addColorStop(1,`rgba(${ink[0]},${ink[1]},${ink[2]},0)`); ctx.fillStyle=gr; ctx.arc(d.x,d.y,bleed,0,Math.PI*2); ctx.fill(); } }
+    ctx.restore(); }
+  return {brushText,stampDabs};
+}

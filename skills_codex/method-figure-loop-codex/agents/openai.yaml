@@ -1,0 +1,4 @@
+interface:
+  display_name: "Method Figure Loop · Codex"
+  short_description: "Draw replayable method figures with Codex visual review"
+  default_prompt: "Use $method-figure-loop-codex to draw this method as a replayable p5.js figure with SVG export, improving it through independent Codex subagent review."

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="520" viewBox="0 0 1120 520" role="img" aria-labelledby="title desc">
+<title id="title">武汉卷的盲评得分轨迹</title>
+<desc id="desc">B1 为 gpt-5.6-sol 的 3.5 分，独立显示。B2 到 B11 由 gpt-6-astra 评审，得分为 4.5、5.5、6、6、6.3、6.5、6.7、6.8、6.8、7。</desc>
+<rect width="1120" height="520" fill="#faf7f0"/>
+<g font-family="PingFang SC, Helvetica Neue, sans-serif">
+<text x="38" y="45" fill="#302b22" font-size="27" font-weight="600" text-anchor="start">Wuhan · Blind-review scores</text>
+<text x="38" y="77" fill="#4d4539" font-size="16" font-weight="400" text-anchor="start">Claude executor · Scores from each round · Out of 10</text>
+<rect x="160" y="99" width="885" height="292" fill="#f2ede2"/>
+<path d="M76 391.0 H1045" stroke="#ded6c8" stroke-width="1"/>
+<text x="59" y="396.0" fill="#4d4539" font-size="16" font-weight="400" text-anchor="end">3.5</text>
+<path d="M76 369.46153846153845 H1045" stroke="#ded6c8" stroke-width="1"/>
+<text x="59" y="374.46153846153845" fill="#4d4539" font-size="16" font-weight="400" text-anchor="end">4</text>
+<path d="M76 326.38461538461536 H1045" stroke="#ded6c8" stroke-width="1"/>
+<text x="59" y="331.38461538461536" fill="#4d4539" font-size="16" font-weight="400" text-anchor="end">5</text>
+<path d="M76 283.3076923076923 H1045" stroke="#ded6c8" stroke-width="1"/>
+<text x="59" y="288.3076923076923" fill="#4d4539" font-size="16" font-weight="400" text-anchor="end">6</text>
+<path d="M76 240.23076923076923 H1045" stroke="#ded6c8" stroke-width="1"/>
+<text x="59" y="245.23076923076923" fill="#4d4539" font-size="16" font-weight="400" text-anchor="end">7</text>
+<path d="M76 197.15384615384616 H1045" stroke="#ded6c8" stroke-width="1"/>
+<text x="59" y="202.15384615384616" fill="#4d4539" font-size="16" font-weight="400" text-anchor="end">8</text>
+<path d="M76 154.07692307692307 H1045" stroke="#ded6c8" stroke-width="1"/>
+<text x="59" y="159.07692307692307" fill="#4d4539" font-size="16" font-weight="400" text-anchor="end">9</text>
+<path d="M76 111.0 H1045" stroke="#ded6c8" stroke-width="1"/>
+<text x="59" y="116.0" fill="#4d4539" font-size="16" font-weight="400" text-anchor="end">10</text>
+<text x="98" y="422" fill="#4d4539" font-size="15" font-weight="400" text-anchor="middle">B1</text>
+<text x="189" y="422" fill="#4d4539" font-size="15" font-weight="400" text-anchor="middle">B2</text>
+<text x="280" y="422" fill="#4d4539" font-size="15" font-weight="400" text-anchor="middle">B3</text>
+<text x="371" y="422" fill="#4d4539" font-size="15" font-weight="400" text-anchor="middle">B4</text>
+<text x="462" y="422" fill="#4d4539" font-size="15" font-weight="400" text-anchor="middle">B5</text>
+<text x="553" y="422" fill="#4d4539" font-size="15" font-weight="400" text-anchor="middle">B6</text>
+<text x="644" y="422" fill="#4d4539" font-size="15" font-weight="400" text-anchor="middle">B7</text>
+<text x="735" y="422" fill="#4d4539" font-size="15" font-weight="400" text-anchor="middle">B8</text>
+<text x="826" y="422" fill="#4d4539" font-size="15" font-weight="400" text-anchor="middle">B9</text>
+<text x="917" y="422" fill="#4d4539" font-size="15" font-weight="400" text-anchor="middle">B10</text>
+<text x="1008" y="422" fill="#4d4539" font-size="15" font-weight="400" text-anchor="middle">B11</text>
+<path d="M150 99 V391" stroke="#aaa08e" stroke-width="1" stroke-dasharray="5 6"/>
+<polyline points="189,347.9230769230769 280,304.8461538461538 371,283.3076923076923 462,283.3076923076923 553,270.38461538461536 644,261.7692307692308 735,253.15384615384616 826,248.84615384615384 917,248.84615384615384 1008,240.23076923076923" fill="none" stroke="#a74733" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="98" cy="391.0" r="5.5" fill="#8c8376" stroke="#faf7f0" stroke-width="2"/>
+<text x="98" y="377.0" fill="#8c8376" font-size="17" font-weight="600" text-anchor="middle">3.5</text>
+<circle cx="189" cy="347.9230769230769" r="5.5" fill="#a74733" stroke="#faf7f0" stroke-width="2"/>
+<text x="189" y="333.9230769230769" fill="#a74733" font-size="17" font-weight="600" text-anchor="middle">4.5</text>
+<circle cx="280" cy="304.8461538461538" r="5.5" fill="#a74733" stroke="#faf7f0" stroke-width="2"/>
+<text x="280" y="290.8461538461538" fill="#a74733" font-size="17" font-weight="600" text-anchor="middle">5.5</text>
+<circle cx="371" cy="283.3076923076923" r="5.5" fill="#a74733" stroke="#faf7f0" stroke-width="2"/>
+<text x="371" y="269.3076923076923" fill="#a74733" font-size="17" font-weight="600" text-anchor="middle">6.0</text>
+<circle cx="462" cy="283.3076923076923" r="5.5" fill="#a74733" stroke="#faf7f0" stroke-width="2"/>
+<text x="462" y="269.3076923076923" fill="#a74733" font-size="17" font-weight="600" text-anchor="middle">6.0</text>
+<circle cx="553" cy="270.38461538461536" r="5.5" fill="#a74733" stroke="#faf7f0" stroke-width="2"/>
+<text x="553" y="256.38461538461536" fill="#a74733" font-size="17" font-weight="600" text-anchor="middle">6.3</text>
+<circle cx="644" cy="261.7692307692308" r="5.5" fill="#a74733" stroke="#faf7f0" stroke-width="2"/>
+<text x="644" y="247.76923076923077" fill="#a74733" font-size="17" font-weight="600" text-anchor="middle">6.5</text>
+<circle cx="735" cy="253.15384615384616" r="5.5" fill="#a74733" stroke="#faf7f0" stroke-width="2"/>
+<text x="735" y="239.15384615384616" fill="#a74733" font-size="17" font-weight="600" text-anchor="middle">6.7</text>
+<circle cx="826" cy="248.84615384615384" r="5.5" fill="#a74733" stroke="#faf7f0" stroke-width="2"/>
+<text x="826" y="234.84615384615384" fill="#a74733" font-size="17" font-weight="600" text-anchor="middle">6.8</text>
+<circle cx="917" cy="248.84615384615384" r="5.5" fill="#a74733" stroke="#faf7f0" stroke-width="2"/>
+<text x="917" y="234.84615384615384" fill="#a74733" font-size="17" font-weight="600" text-anchor="middle">6.8</text>
+<circle cx="1008" cy="240.23076923076923" r="5.5" fill="#a74733" stroke="#faf7f0" stroke-width="2"/>
+<text x="1008" y="226.23076923076923" fill="#a74733" font-size="17" font-weight="600" text-anchor="middle">7.0</text>
+<text x="38" y="466" fill="#7d7365" font-size="16" font-weight="400" text-anchor="start">● B1: gpt-5.6-sol</text>
+<text x="318" y="466" fill="#a74733" font-size="16" font-weight="400" text-anchor="start">● B2–B11: gpt-6-astra · Same reviewer model: 4.5 → 7.0</text>
+<text x="38" y="499" fill="#4d4539" font-size="14" font-weight="400" text-anchor="start">The reviewer changed after B1; the two baselines are not connected.</text>
+</g></svg>

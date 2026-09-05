@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reference Art Loop · Codex"
+  short_description: "Replay reference art and iterate with Codex visual review"
+  default_prompt: "Use $reference-art-loop-codex to paint this subject in the supplied reference's craft as a replayable program, improving it through independent Codex subagent review."
