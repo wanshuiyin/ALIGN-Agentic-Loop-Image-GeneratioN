@@ -16,19 +16,27 @@ The loop is straightforward: study the reference, specify the work, draw and ren
 
 ## What the loop changed
 
+**Planning gets the picture started; visual feedback gives the next round something new to reason about.** Work such as [T2I-R1](https://arxiv.org/abs/2505.00703) shows benefits from reasoning in image generation. Our Wuhan run also began with substantial planning: three composition proposals, a detailed specification and interfaces for eight modules. Even with a strong coding agent, the first complete render still had floating figures, repetitive buildings and weak spatial relationships.
+
+ALIGN extends reasoning across a **visual feedback loop: render → review → revise**. Each rendered image gives the reviewer concrete evidence; its critique gives the executor a new problem to solve. The program and wiki carry those decisions into the next round. Additional effort goes into examining consequences and revising the drawing rules, as well as planning before the first render.
+
 ![Four stages of the Wuhan bridge: v1, v4, v7 and v11, at the same viewport](docs/assets/wuhan-loop-evolution-en.png)
 
-Later rounds repair the bridge's contact with the banks, place people behind the rail, and develop boats and groups of people. The changes are visible at the same viewing scale. [Browse all 11 versions →](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/iterations/index.html)
+Some improvements required **changing how objects were constructed**. B3 identified that adding more poses would leave the same underlying figure template. In v4, people became action groups sharing contact points and weight; repeated facades became continuous streets with recessed shops, side walls and overlapping roofs. Changing a shared drawing rule can improve many passages at once. [The decision](examples/qingming-wuhan/wiki/decisions.md#d-10--b3-裁决四处换原语三处调参-2026-09-05) · [All 11 versions](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/iterations/index.html).
 
 ![Wuhan blind-review scores: B1 separately at 3.5; B2–B11 rise from 4.5 to 7.0, with two plateaus](docs/assets/wuhan-review-scores-en.png)
 
-B2–B11 used gpt-6-astra: 4.5 → 7.0, with two plateaus. B1 used gpt-5.6-sol and is shown separately. The vertical axis starts at 3.5; scores are out of 10. [Original review log](examples/qingming-wuhan/wiki/review-log.md).
+B2–B11 used gpt-6-astra: 4.5 → 7.0, with two plateaus. Progress included reversals: v5's tree rewrite looked worse, so the next version restored the earlier construction and made a smaller correction. B1 used gpt-5.6-sol and is shown separately. The vertical axis starts at 3.5; scores are out of 10. [Original review log](examples/qingming-wuhan/wiki/review-log.md).
 
 ## The same subject, two runs
 
 ![Final Wuhan scrolls and details: Claude executor with Codex MCP review, and Codex executor with independent Codex subagent review](docs/assets/wuhan-two-runs-en.png)
 
 In these two runs, the Claude + Codex result has richer street scenes, more varied groups of people and more depth around the bridge and boats. The Codex + Codex result retains more repeated building blocks. Both used review loops: 11 rounds for the former, 13 for the latter. [Open the comparison →](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/#comparison)
+
+**Adversarial review gives the executor a concrete challenge.** The reviewer sees the rendered picture and reference, without access to the source code. Its job is to identify the most visible failures and check whether previous ones remain. In B1, it found that the left city dominated the composition, despite the plan calling for the bridge to be the focus. The executor then reduced the competing city crowds and reorganized the bridge events. The criticism changed the composition. [Decision D-07](examples/qingming-wuhan/wiki/decisions.md#d-07--桥必须是峰-2026-09-05).
+
+Using another model family is intended to challenge assumptions the executor may keep repeating. Both configurations here use independent review; the comparison shows how different executor–reviewer pairings developed the same subject. Our reading of these runs is that useful critique and the executor's ability to act on it matter together: more rounds alone do not explain the stronger result.
 
 ## Use the skills
 
