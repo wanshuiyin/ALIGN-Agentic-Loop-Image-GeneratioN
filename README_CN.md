@@ -1,5 +1,7 @@
 # ALIGN — Agentic Loop Image GeneratioN
 
+[![安装 — 快速开始](docs/assets/install-badge.svg)](#quick-start)
+
 > 🎨 **让 coding agent 直接作画。** 在 diffusion 和自回归图像模型之外，ALIGN 探索一条用代码生成图像的路线：依靠强大的编程能力，让 agent 研究参考、用 p5.js 落笔，再通过独立视觉审阅逐轮改进。每一笔、每一层、每一道工序都在源码里，可以读、可以改，也可以从空白开始回放。
 
 [English](README.md) · 中文 · [交互展示](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/)
@@ -44,7 +46,11 @@ B2–B11 使用同一评审模型 gpt-6-astra，得分从 4.5 升至 7.0，中�
 
 这里两种配置都有独立审阅，对比展示的是不同执行者与评审组合如何完成同一题材。从这两次运行看，我们更关注反馈是否有用、执行者能否把它落实成有效的画法；单看轮数多少，解释不了成图的差距。
 
-## 使用 skills
+<a id="quick-start"></a>
+
+## 快速开始
+
+[Claude Code](#claude-code) · [Codex](#codex) · [更新](#update)
 
 两种任务，各有完整的 Claude Code 和 Codex 版本：
 
@@ -53,25 +59,93 @@ B2–B11 使用同一评审模型 gpt-6-astra，得分从 4.5 升至 7.0，中�
 | 参考画意临，或把画法迁移到新题材 | [reference-art-loop](skills/reference-art-loop/SKILL.md) | [reference-art-loop-codex](skills_codex/reference-art-loop-codex/SKILL.md) |
 | 方法图、构建回放与 SVG 导出 | [method-figure-loop](skills/method-figure-loop/SKILL.md) | [method-figure-loop-codex](skills_codex/method-figure-loop-codex/SKILL.md) |
 
-**Claude Code：**把需要的 `skills/` 子目录复制到项目的 `.claude/skills/`（[安装说明](https://code.claude.com/docs/en/skills)），再接入 Codex MCP 做独立视觉审阅：
+先克隆一次，再选下面的运行方式。把 `~/your-project` 换成你准备作画的项目目录。
 
 ```sh
-claude mcp add codex --scope user -- codex mcp-server
+git clone https://github.com/wanshuiyin/ALIGN-Agentic-Loop-Image-GeneratioN.git ~/ALIGN-Agentic-Loop-Image-GeneratioN
 ```
+
+### Claude Code
+
+Claude 负责画，Codex 通过 MCP 审图。已有 [Claude Code](https://code.claude.com/docs/en/setup) 后，运行：
+
+```sh
+# 1. 把两个技能链接到 <project>/.claude/skills/
+bash ~/ALIGN-Agentic-Loop-Image-GeneratioN/tools/install.sh claude ~/your-project
+
+# 2. 配置 Codex 审阅（已安装、登录可跳过这两步）
+npm install -g @openai/codex
+codex login
+claude mcp add codex --scope user -- codex mcp-server
+
+# 3. 进入项目，启动 Claude Code
+cd ~/your-project
+claude
+```
+
+在 Claude Code 中附上参考图，调用其中一个技能：
 
 ```text
 /reference-art-loop 清明上河图 → 武汉 → p5.js 手卷，rounds: 8
 /method-figure-loop 给定 Figure 1 → 我的方法 → p5.js，rounds: 5
 ```
 
-**Codex：**在本仓库打开 Codex，`.agents/skills/` 已接好两个入口。每轮由新的 Codex 子代理在独立上下文中审图。[详细用法](skills_codex/README.md)。
+### Codex
+
+Codex 负责画，每轮新开 Codex 子代理审图。这个版本使用原生子代理，无需配置 MCP。
+
+```sh
+# 1. 把两个技能链接到 <project>/.agents/skills/
+bash ~/ALIGN-Agentic-Loop-Image-GeneratioN/tools/install.sh codex ~/your-project
+
+# 2. 安装并登录（已有可跳过）
+npm install -g @openai/codex
+codex login
+
+# 3. 进入项目，启动 Codex
+cd ~/your-project
+codex
+```
+
+在 Codex 中附上参考图，调用其中一个技能：
 
 ```text
 $reference-art-loop-codex 清明上河图 → 武汉 → p5.js 手卷，rounds: 8
 $method-figure-loop-codex 给定 Figure 1 → 我的方法 → p5.js，rounds: 5
 ```
 
-同时提供参考图、输出目录，以及要画的题材或方法内容。运行环境需要看图、本地浏览器渲染和相应的评审连接。
+如果直接在 ALIGN 仓库里打开 Codex，两个技能已经可用。[更多 Codex 用法](skills_codex/README.md) · [Codex CLI 安装说明](https://developers.openai.com/codex/cli)。
+
+两种方式都需要提供参考图、输出目录，以及要画的题材或方法内容。运行环境需要看图、本地浏览器渲染和相应的评审工具。技能入口分别是 [Claude Code 的 `.claude/skills/`](https://code.claude.com/docs/en/skills) 和 [Codex 的 `.agents/skills/`](https://developers.openai.com/codex/skills)。
+
+<a id="update"></a>
+
+### 更新
+
+安装脚本链接的是完整技能目录。保留克隆的仓库，以后拉取更新，两边已安装的技能就会一起更新：
+
+```sh
+git -C ~/ALIGN-Agentic-Loop-Image-GeneratioN pull --ff-only
+```
+
+安装命令可以重复运行，已经指向这份仓库的链接会保留。如果会话还在使用旧版技能，重新启动即可。
+
+<details>
+<summary>在所有项目中使用</summary>
+
+把安装目标换成用户主目录即可。选一种，也可以两种都装：
+
+```sh
+# Claude Code：~/.claude/skills/
+bash ~/ALIGN-Agentic-Loop-Image-GeneratioN/tools/install.sh claude ~
+
+# Codex：~/.agents/skills/
+bash ~/ALIGN-Agentic-Loop-Image-GeneratioN/tools/install.sh codex ~
+```
+
+如果目标位置已经有同名技能目录，脚本会保留它并显示路径。想换成链接版时，先把原目录移到别处。
+
+</details>
 
 ## 三个完整案例
 

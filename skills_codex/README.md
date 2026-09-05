@@ -43,7 +43,16 @@ $method-figure-loop-codex 给定 Figure 1 → 我的方法 → p5.js，rounds: 5
 已授权的轮次持续做完，不要每轮请求确认；不能看图或代理未返回时如实记录，不虚构轮数或通过。
 ```
 
-在其他项目使用时，将所需技能目录复制或链接到该项目的 `.agents/skills/`。
+在其他项目使用时，从 ALIGN 仓库目录运行安装脚本，将两个完整技能链接到项目的 `.agents/skills/`：
+
+```sh
+bash tools/install.sh codex ~/your-project
+```
+
+保留这份仓库，之后在仓库中 `git pull --ff-only`，项目里的技能就会同步更新。
+将 `~/your-project` 换成 `~`，即可安装到用户级的 `~/.agents/skills/`。
+CLI 安装、登录和 Claude Code 的用法见[快速开始](../README_CN.md#quick-start)。
+
 只复制 `skills_codex/` 而不接入发现目录时，仍可通过明确的文件路径调用。
 Codex 会自动发现技能变化；若列表尚未更新，重新启动 Codex。
 [技能发现说明](https://developers.openai.com/codex/skills#where-to-save-skills)。

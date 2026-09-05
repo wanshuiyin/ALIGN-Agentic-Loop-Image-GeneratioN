@@ -1,5 +1,7 @@
 # ALIGN — Agentic Loop Image GeneratioN
 
+[![Install — Quick Start](docs/assets/install-badge.svg)](#quick-start)
+
 > 🎨 **Let coding agents paint.** ALIGN explores image generation beyond diffusion and autoregressive image models: a powerful coding agent studies a reference, writes p5.js to draw the picture, and improves the program through independent visual review. Every stroke, layer and construction stage lives in source you can read, edit and replay.
 
 English · [中文](README_CN.md) · [Interactive gallery](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/)
@@ -44,7 +46,9 @@ In these two runs, the Claude + Codex result has richer street scenes, more vari
 
 Both configurations here use independent review; the comparison shows how different executor–reviewer pairings developed the same subject. Our reading of these runs is that useful critique and the executor's ability to act on it matter together: more rounds alone do not explain the stronger result.
 
-## Use the skills
+## Quick Start
+
+[Claude Code](#claude-code) · [Codex](#codex) · [Update](#update)
 
 Two tasks, with a complete skill for each runtime:
 
@@ -53,25 +57,91 @@ Two tasks, with a complete skill for each runtime:
 | Paint from a reference, or carry its craft into a new subject | [reference-art-loop](skills/reference-art-loop/SKILL.md) | [reference-art-loop-codex](skills_codex/reference-art-loop-codex/SKILL.md) |
 | Draw a method figure with construction replay and SVG export | [method-figure-loop](skills/method-figure-loop/SKILL.md) | [method-figure-loop-codex](skills_codex/method-figure-loop-codex/SKILL.md) |
 
-**Claude Code:** copy the desired folder from `skills/` into your project's `.claude/skills/` ([skill setup](https://code.claude.com/docs/en/skills)). Connect Codex MCP for independent visual review:
+Clone once, then choose your runtime below. Replace `~/your-project` with the folder where you want to work.
 
 ```sh
-claude mcp add codex --scope user -- codex mcp-server
+git clone https://github.com/wanshuiyin/ALIGN-Agentic-Loop-Image-GeneratioN.git ~/ALIGN-Agentic-Loop-Image-GeneratioN
 ```
+
+### Claude Code
+
+Claude draws; Codex reviews through MCP. With [Claude Code installed](https://code.claude.com/docs/en/setup), run:
+
+```sh
+# 1. Link both skills into <project>/.claude/skills/
+bash ~/ALIGN-Agentic-Loop-Image-GeneratioN/tools/install.sh claude ~/your-project
+
+# 2. Set up Codex for visual review (skip install/login if already set up)
+npm install -g @openai/codex
+codex login
+claude mcp add codex --scope user -- codex mcp-server
+
+# 3. Open your project
+cd ~/your-project
+claude
+```
+
+In Claude Code, attach your reference image and invoke either skill:
 
 ```text
 /reference-art-loop Qingming Along the River → Wuhan → p5.js handscroll, rounds: 8
 /method-figure-loop Reference Figure 1 → my method → p5.js, rounds: 5
 ```
 
-**Codex:** open this repository; `.agents/skills/` exposes both ports. Each review round uses a new Codex subagent with a separate context. [Setup and usage](skills_codex/README.md).
+### Codex
+
+Codex draws and opens a fresh Codex subagent for each visual review. This version uses native subagents and needs no MCP setup.
+
+```sh
+# 1. Link both skills into <project>/.agents/skills/
+bash ~/ALIGN-Agentic-Loop-Image-GeneratioN/tools/install.sh codex ~/your-project
+
+# 2. Install and sign in (skip if already set up)
+npm install -g @openai/codex
+codex login
+
+# 3. Open your project
+cd ~/your-project
+codex
+```
+
+In Codex, attach your reference image and invoke either skill:
 
 ```text
 $reference-art-loop-codex Qingming Along the River → Wuhan → p5.js handscroll, rounds: 8
 $method-figure-loop-codex Reference Figure 1 → my method → p5.js, rounds: 5
 ```
 
-Supply a reference image, an output directory and the subject or method to draw. The agent needs image viewing, local browser rendering and the corresponding reviewer connection.
+Both skills are also available when you open the ALIGN checkout itself in Codex. [More Codex examples](skills_codex/README.md) · [Codex CLI installation](https://developers.openai.com/codex/cli).
+
+For either runtime, provide a reference image, an output directory and the subject or method to draw. The agent needs image viewing, local browser rendering and its reviewer tools. Skills are discovered through [Claude Code's `.claude/skills/`](https://code.claude.com/docs/en/skills) or [Codex's `.agents/skills/`](https://developers.openai.com/codex/skills).
+
+### Update
+
+The installer creates symlinks to the full skill folders. Keep the checkout in place; pulling changes updates both runtimes' installed skills:
+
+```sh
+git -C ~/ALIGN-Agentic-Loop-Image-GeneratioN pull --ff-only
+```
+
+You can rerun the installer; existing links to this checkout are kept. If the agent still shows an older skill, restart the session.
+
+<details>
+<summary>Install for all your projects</summary>
+
+Use your home directory as the destination. Choose either runtime, or run both:
+
+```sh
+# Claude Code: ~/.claude/skills/
+bash ~/ALIGN-Agentic-Loop-Image-GeneratioN/tools/install.sh claude ~
+
+# Codex: ~/.agents/skills/
+bash ~/ALIGN-Agentic-Loop-Image-GeneratioN/tools/install.sh codex ~
+```
+
+If a skill folder already exists there, the installer leaves it in place and prints its path. Move that folder aside if you want to replace it with the linked version.
+
+</details>
 
 ## Three worked examples
 
