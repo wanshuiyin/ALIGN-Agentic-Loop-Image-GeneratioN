@@ -16,7 +16,7 @@ The loop is straightforward: study the reference, specify the work, draw and ren
 
 ## What the loop changed
 
-**Planning gets the picture started; visual feedback gives the next round something new to reason about.** Work such as [T2I-R1](https://arxiv.org/abs/2505.00703) shows benefits from reasoning in image generation. Our Wuhan run also began with substantial planning: three composition proposals, a detailed specification and interfaces for eight modules. Even with a strong coding agent, the first complete render still had floating figures, repetitive buildings and weak spatial relationships.
+**Planning gets the picture started; visual feedback gives the next round something new to reason about.** Work such as [T2I-R1](https://arxiv.org/abs/2505.00703) shows benefits from reasoning in image generation. Our run also began with substantial planning: three composition proposals, a detailed specification and interfaces for eight modules. Even with a strong coding agent, the first complete render still had floating figures, repetitive buildings and weak spatial relationships.
 
 ALIGN extends reasoning across a **visual feedback loop: render → review → revise**. Each rendered image gives the reviewer concrete evidence; its critique gives the executor a new problem to solve. The program and wiki carry those decisions into the next round. Additional effort goes into examining consequences and revising the drawing rules, as well as planning before the first render.
 
