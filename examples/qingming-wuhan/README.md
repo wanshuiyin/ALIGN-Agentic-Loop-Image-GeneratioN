@@ -111,7 +111,7 @@ renders the eight views and the full scroll with headless Edge. One view by hand
   "file://$PWD/qingming-wuhan-preview.html#p=1&cam=0.577"
 ```
 
-For the full scroll use `--window-size=5300,560` and `#full=1`. Any Chromium works; swap the
-binary path.
+For the full scroll use `--window-size=5300,560` and `#full=1`. The render script auto-detects
+Edge, Chrome or Chromium on macOS, Linux and Windows Git Bash. Set `BROWSER_BIN` to override it.
 
 The bundled p5.js 1.9.4 runs locally. Google Fonts still requires a connection; local font fallbacks are used when unavailable.
