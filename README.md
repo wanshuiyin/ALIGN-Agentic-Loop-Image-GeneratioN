@@ -29,7 +29,7 @@ The loop is straightforward: study the reference, specify the work, draw and ren
 
 ## Why an Agentic Loop Works Better
 
-**Planning gets the picture started; visual feedback gives the next round something new to reason about.** Our run began with substantial planning: three composition proposals, a detailed specification and interfaces for eight modules. Even with a strong coding agent, the first complete render still had floating figures, repetitive buildings and weak spatial relationships.
+**Planning starts the picture; visual feedback drives the next iteration.** Even with detailed plans and a strong coding agent, our first render had floating figures, repetitive buildings and weak spatial relationships.
 
 ALIGN brings two core ideas from our [ARIS (Auto-Research-In-Sleep)](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) project into programmatic image generation. The first is **an agentic loop that turns critique into action**. Here it takes the form **render → review → revise**: each image gives the reviewer concrete evidence, its critique gives the executor a new problem to solve, and the program and wiki carry decisions forward. Reasoning continues through the consequences of earlier choices.
 
