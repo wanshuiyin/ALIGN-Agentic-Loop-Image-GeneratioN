@@ -22,7 +22,10 @@
 body{background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:16px;line-height:1.6;margin:0}
 main{max-width:980px;margin:0 auto;padding:36px 24px 64px}
 header{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:16px}
-h1.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.align-brand{flex-basis:100%;padding-bottom:14px;border-bottom:1px solid var(--rule);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.align-brand h1{margin:0;font-size:clamp(22px,3.4vw,32px);font-weight:700;line-height:1.2;letter-spacing:-.02em}
+.align-brand .align-subtitle{margin:7px 0 0;color:var(--cinnabar);font-size:clamp(14px,1.8vw,18px);font-weight:500;line-height:1.4}
 #ttl{min-height:74px}#ttl canvas{display:block}
 header p{margin:0;color:var(--ink-2);font-size:14px}
 .stage-wrap{background:#14161B;border:1px solid var(--rule);border-radius:3px;overflow-x:auto;cursor:grab}
@@ -54,7 +57,11 @@ label{display:flex;align-items:center;gap:6px}
 
 <main>
 <header>
-  <div id="ttl" aria-hidden="true"></div><h1 class="sr">清明上河圖 · 武漢</h1>
+  <div class="align-brand">
+    <h1>ALIGN: Agentic Loop Image GeneratioN</h1>
+    <p class="align-subtitle">Without Diffusion and Autoregressive</p>
+  </div>
+  <div id="ttl" aria-hidden="true"></div><h2 class="sr">清明上河圖 · 武漢</h2>
   <p>北宋 · 張擇端《清明上河圖》筆法 · 武漢兩江 · 絹本淡設色 · 1 px ≈ 0.5 mm · 此卷為 p5.js 程序生成的風格意臨:取其法,不取其景。</p>
 </header>
 
