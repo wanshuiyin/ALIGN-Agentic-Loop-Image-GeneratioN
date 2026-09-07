@@ -103,15 +103,19 @@ The eight cams: left 0 · jianghanguan 0.145 · hanzhengjie 0.259 · qingchuan 0
 ## Re-render
 
 `bash tools_assemble.sh` concatenates `src/` into both html files; `bash tools_render.sh out/`
-renders the eight views and the full scroll with headless Edge. One view by hand:
+renders the eight views and the full scroll with headless Edge, Chrome or Chromium. One view by hand:
 
 ```
-"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge" --headless=new --disable-gpu --hide-scrollbars \
+"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge" --headless=new --inprivate --disable-gpu --hide-scrollbars \
   --window-size=1000,700 --virtual-time-budget=240000 --screenshot=view-bridge.png \
   "file://$PWD/qingming-wuhan-preview.html#p=1&cam=0.577"
 ```
 
 For the full scroll use `--window-size=5300,560` and `#full=1`. The render script auto-detects
 Edge, Chrome or Chromium on macOS, Linux and Windows Git Bash. Set `BROWSER_BIN` to override it.
+It uses a temporary profile and a private window so Edge can exit after each screenshot.
+On Windows, the script uses the built-in Windows PowerShell to wait for the browser and its
+child processes before replacing each screenshot. `VIRTUAL_TIME_BUDGET_MS` sets Chromium's
+virtual-time budget (default `240000` ms).
 
 The bundled p5.js 1.9.4 runs locally. Google Fonts still requires a connection; local font fallbacks are used when unavailable.

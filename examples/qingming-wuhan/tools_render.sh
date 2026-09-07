@@ -49,6 +49,11 @@ find_browser() {
 }
 
 browser_bin="$(find_browser)"
+# Edge can keep its regular profile running after a headless screenshot.
+case "${browser_bin##*/}" in
+  *[Ee]dge*) private_mode=--inprivate ;;
+  *)        private_mode=--incognito ;;
+esac
 page="$script_dir/qingming-wuhan-preview.html"
 if [[ ! -f "$page" ]]; then
   printf 'Missing page: %s\nRun tools_assemble.sh first.\n' "$page" >&2
@@ -62,16 +67,10 @@ cleanup_profile() {
 trap cleanup_profile EXIT
 
 virtual_time_budget=${VIRTUAL_TIME_BUDGET_MS:-240000}
-render_timeout=${RENDER_TIMEOUT_SECONDS:-360}
 if [[ ! "$virtual_time_budget" =~ ^[1-9][0-9]*$ ]]; then
   printf 'VIRTUAL_TIME_BUDGET_MS must be a positive integer: %s\n' "$virtual_time_budget" >&2
   exit 2
 fi
-if [[ ! "$render_timeout" =~ ^[1-9][0-9]*$ ]]; then
-  printf 'RENDER_TIMEOUT_SECONDS must be a positive integer: %s\n' "$render_timeout" >&2
-  exit 2
-fi
-
 browser_profile=$profile_dir
 if command -v cygpath >/dev/null 2>&1; then
   page_url="file:///$(cygpath -m "$page")"
@@ -80,19 +79,36 @@ else
   page_url="file://$page"
 fi
 
+run_browser() {
+  if command -v cygpath >/dev/null 2>&1; then
+    # Start-Process -Wait waits for Windows GUI applications and their children.
+    # Quote each native argument so paths containing spaces stay together.
+    local browser_arguments
+    printf -v browser_arguments '"%s" ' "$@"
+    ALIGN_RENDER_BROWSER="$(cygpath -w "$browser_bin")" \
+    ALIGN_RENDER_ARGUMENTS="$browser_arguments" \
+      powershell.exe -NoLogo -NoProfile -NonInteractive -Command '
+        $ErrorActionPreference = "Stop"
+        $process = Start-Process -FilePath $env:ALIGN_RENDER_BROWSER -ArgumentList $env:ALIGN_RENDER_ARGUMENTS -Wait -PassThru
+        exit $process.ExitCode
+      '
+  else
+    "$browser_bin" "$@"
+  fi
+}
+
 render() {
   local name=$1 hash=$2 size=$3
   local output="$out_dir/$name.png"
-  local output_tmp="$output.tmp.$$"
+  local output_tmp="$out_dir/$name.tmp.$$.png"
   local browser_output=$output_tmp
   local browser_log="$output_tmp.log"
-  local waited=0 wait_limit=$((render_timeout * 10))
 
   if command -v cygpath >/dev/null 2>&1; then
     browser_output="$(cygpath -w "$output_tmp")"
   fi
 
-  if ! "$browser_bin" --headless=new --disable-gpu --hide-scrollbars --no-first-run \
+  if ! run_browser --headless=new --disable-gpu --hide-scrollbars --no-first-run "$private_mode" \
     --user-data-dir="$browser_profile" \
     --window-size="$size" --virtual-time-budget="$virtual_time_budget" \
     --screenshot="$browser_output" "$page_url#$hash" >"$browser_log" 2>&1; then
@@ -102,15 +118,8 @@ render() {
     return 1
   fi
 
-  # Windows GUI executables can return control to Git Bash before the headless
-  # child writes its screenshot. Wait for the promised artifact, with a cap.
-  while [[ ! -s "$output_tmp" && "$waited" -lt "$wait_limit" ]]; do
-    sleep 0.1
-    waited=$((waited + 1))
-  done
-
   if [[ ! -s "$output_tmp" ]]; then
-    printf 'Browser reported success but did not create %s within %s seconds.\n' "$output_tmp" "$render_timeout" >&2
+    printf 'Browser exited without creating a screenshot for %s.\n' "$name" >&2
     cat -- "$browser_log" >&2
     rm -f -- "$output_tmp" "$browser_log"
     return 1
