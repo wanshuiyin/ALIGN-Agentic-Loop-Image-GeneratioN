@@ -1,0 +1,4 @@
+interface:
+  display_name: "ALIGN-video · Codex"
+  short_description: "Create coded videos through fresh-context film review"
+  default_prompt: "Use $align-video-codex to create or revise this video with agent-authored code and fresh-context Codex review, without image, video or music generation models."

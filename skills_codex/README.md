@@ -1,31 +1,42 @@
 # ALIGN · Codex skills
 
-两个技能各自完整、自包含，与 `skills/` 中的 Claude Code 版本对应：
+三个技能各自完整、自包含，与 `skills/` 中的 Claude Code 版本对应：
 
 | 用途 | Codex 技能 | Claude Code 技能 |
 |---|---|---|
 | 参考画意临、风格迁移与工艺回放 | [reference-art-loop-codex](reference-art-loop-codex/SKILL.md) | [reference-art-loop](../skills/reference-art-loop/SKILL.md) |
 | 方法图、构建回放与 SVG 导出 | [method-figure-loop-codex](method-figure-loop-codex/SKILL.md) | [method-figure-loop](../skills/method-figure-loop/SKILL.md) |
+| 通用程序视频创作与迭代 | [align-video-codex](align-video-codex/SKILL.md) | [align-video](../skills/align-video/SKILL.md) |
 
 研究、工序、案例和评审问题与对应的 CC 技能一致；Codex 版使用 Codex 元数据、
-`$skill-name` 调用和原生子代理评审。两个入口均保留完整正文，不依赖共享教义文件。
+`$skill-name` 调用和原生子代理评审。三个入口均保留完整正文，不依赖共享教义文件。
 
-Codex 主代理负责研究、代码、渲染和修改；每轮新建一个不继承主对话的
+绘画与方法图由 Codex 主代理负责研究、代码、渲染和修改；每轮新建一个不继承主对话的
 Codex 子代理，只看固定参考图、成图、固定裁片和必要的工序图，给出视觉
 审阅。后一轮修改使用前一轮的真实反馈。源码审阅另开任务，不计入盲评。
 这是 Codex 内部的独立上下文审阅，不是跨模型互审；不依赖 Claude Code
 或外部 Codex MCP。运行环境需要提供子代理、看图和本地渲染能力。
 
-仓库的 `.agents/skills/` 通过相对链接指向这两个目录，供 Codex 在本仓库内发现。
+视频技能把审阅材料扩展到成片、参考片段、动作序列、声音和前后版本。默认每轮使用
+全新上下文的独立 Codex reviewer，先记录不知创作意图时的实际理解，再给参考做工艺
+审阅。用户明确要求 self-review 或宿主没有独立 reviewer 时，仍持续制作和迭代，并
+如实记录模式；抽帧检查不冒称正常速度、有声观看。新上下文隔开创作解释，但仍是
+same-family 审阅，验收标为 provisional。
+
+仓库的 `.agents/skills/` 通过相对链接指向这三个目录，供 Codex 在本仓库内发现。
 可以直接使用：
 
 ```text
 $reference-art-loop-codex 清明上河图 → 武汉 → p5.js 手卷，rounds: 8
 $method-figure-loop-codex 给定 Figure 1 → 我的方法 → p5.js，rounds: 5
+$align-video-codex 做一个清晰讲解归并排序的动画，保存到 ./sort-film，rounds: 4
 ```
 
-同时提供参考图、输出目录，以及方法图要表达的内容。绘画默认 8 轮，方法图默认
-5 轮；用户明确指定的预算优先。需要时也可以直接让 Codex 读取技能文件。
+同时提供参考素材、输出目录和任务内容。绘画默认 8 轮，方法图默认 5 轮，视频默认
+最多 4 轮实质审阅与修改；用户明确指定的预算优先。需要时也可以直接让 Codex
+读取技能文件。视频工作流以散文为主，不捆绑 Python 框架，由 agent 根据题材选择
+实现。剧情、讲解、产品演示、二维循环和三维影片均可使用；简单任务可合并制作
+阶段。没有指定参考时，agent 从任务建立视觉方向并制作首个可见样例。
 
 一个保留可重放历史的绘画请求示例：
 
@@ -43,7 +54,7 @@ $method-figure-loop-codex 给定 Figure 1 → 我的方法 → p5.js，rounds: 5
 已授权的轮次持续做完，不要每轮请求确认；不能看图或代理未返回时如实记录，不虚构轮数或通过。
 ```
 
-在其他项目使用时，从 ALIGN 仓库目录运行安装脚本，将两个完整技能链接到项目的 `.agents/skills/`：
+在其他项目使用时，从 ALIGN 仓库目录运行安装脚本，将三个完整技能链接到项目的 `.agents/skills/`：
 
 ```sh
 bash tools/install.sh codex ~/your-project
@@ -75,12 +86,15 @@ skills_codex/
 │       ├── reviewer-protocol.md
 │       ├── craft-and-replay.md
 │       └── qianli-lessons.md
-└── method-figure-loop-codex/
+├── method-figure-loop-codex/
+│   ├── SKILL.md
+│   └── agents/openai.yaml
+└── align-video-codex/
     ├── SKILL.md
     └── agents/openai.yaml
 ```
 
-两份 `SKILL.md` 各自负责完整工作流、评审提示词与约束。
+三份 `SKILL.md` 各自负责完整工作流、评审提示词与约束。
 绘画目录的 `references/` 保留独立运行的补充资料，不是执行入口：
 `execution-playbook.md` 给从零启动、
 HTML 打包、浏览器截图、字体离线检查、逐轮命令、记录格式和恢复步骤；

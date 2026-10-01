@@ -59,12 +59,15 @@ B2–B11 使用同一评审模型 gpt-6-astra，得分从 4.5 升至 7.0，中�
 
 [Claude Code](#claude-code) · [Codex](#codex) · [更新](#update)
 
-两种任务，各有完整的 Claude Code 和 Codex 版本：
+三种任务，各有完整的 Claude Code 和 Codex 版本：
 
 | 用途 | Claude Code | Codex |
 |---|---|---|
 | 参考画意临，或把画法迁移到新题材 | [reference-art-loop](skills/reference-art-loop/SKILL.md) | [reference-art-loop-codex](skills_codex/reference-art-loop-codex/SKILL.md) |
 | 方法图、构建回放与 SVG 导出 | [method-figure-loop](skills/method-figure-loop/SKILL.md) | [method-figure-loop-codex](skills_codex/method-figure-loop-codex/SKILL.md) |
+| 通用程序视频：动画、科普讲解、产品演示、动态图形，以及已有视频项目的迭代 | [align-video](skills/align-video/SKILL.md) | [align-video-codex](skills_codex/align-video-codex/SKILL.md) |
+
+**ALIGN-video** 把循环扩展到运动、声音和剪辑。以散文展开参考研究、完整 animatic、关键试片、制作、独立审阅、返工和交付；具体实现由 agent 自主选择并编写，技能包不附带视频框架或 Python 工具集，不调用图像、视频或音乐生成模型。*Out of Line* 只是经验案例，不固定故事、渲染器或模板。几秒的二维循环可以合并阶段直接做首稿，复杂影片再展开完整制作。
 
 先克隆一次，再选下面的运行方式。把 `~/your-project` 换成你准备作画的项目目录。
 
@@ -77,7 +80,7 @@ git clone https://github.com/wanshuiyin/ALIGN-Agentic-Loop-Image-GeneratioN.git 
 Claude 负责画，Codex 通过 MCP 审图。已有 [Claude Code](https://code.claude.com/docs/en/setup) 后，运行：
 
 ```sh
-# 1. 把两个技能链接到 <project>/.claude/skills/
+# 1. 把三个技能链接到 <project>/.claude/skills/
 bash ~/ALIGN-Agentic-Loop-Image-GeneratioN/tools/install.sh claude ~/your-project
 
 # 2. 配置 Codex 审阅（已安装、登录可跳过这两步）
@@ -90,11 +93,12 @@ cd ~/your-project
 claude
 ```
 
-在 Claude Code 中附上参考图，调用其中一个技能：
+在 Claude Code 中给出任务与参考素材，调用对应技能：
 
 ```text
 /reference-art-loop 清明上河图 → 武汉 → p5.js 手卷，rounds: 8
 /method-figure-loop 给定 Figure 1 → 我的方法 → p5.js，rounds: 5
+/align-video 做一部台灯学会分享光的无对白短片，保存到 ./lamp-film，rounds: 4
 ```
 
 ### Codex
@@ -102,7 +106,7 @@ claude
 Codex 负责画，每轮新开 Codex 子代理审图。这个版本使用原生子代理，无需配置 MCP。
 
 ```sh
-# 1. 把两个技能链接到 <project>/.agents/skills/
+# 1. 把三个技能链接到 <project>/.agents/skills/
 bash ~/ALIGN-Agentic-Loop-Image-GeneratioN/tools/install.sh codex ~/your-project
 
 # 2. 安装并登录（已有可跳过）
@@ -114,16 +118,17 @@ cd ~/your-project
 codex
 ```
 
-在 Codex 中附上参考图，调用其中一个技能：
+在 Codex 中给出任务与参考素材，调用对应技能：
 
 ```text
 $reference-art-loop-codex 清明上河图 → 武汉 → p5.js 手卷，rounds: 8
 $method-figure-loop-codex 给定 Figure 1 → 我的方法 → p5.js，rounds: 5
+$align-video-codex 做一个清晰讲解归并排序的动画，保存到 ./sort-film，rounds: 4
 ```
 
-如果直接在 ALIGN 仓库里打开 Codex，两个技能已经可用。[更多 Codex 用法](skills_codex/README.md) · [Codex CLI 安装说明](https://developers.openai.com/codex/cli)。
+如果直接在 ALIGN 仓库里打开 Codex，三个技能已经可用。[更多 Codex 用法](skills_codex/README.md) · [Codex CLI 安装说明](https://developers.openai.com/codex/cli)。
 
-两种方式都需要提供参考图、输出目录，以及要画的题材或方法内容。运行环境需要看图、本地浏览器渲染和相应的评审工具。技能入口分别是 [Claude Code 的 `.claude/skills/`](https://code.claude.com/docs/en/skills) 和 [Codex 的 `.agents/skills/`](https://developers.openai.com/codex/skills)。
+两种方式都需要任务内容、输出目录及已有参考素材。绘画和方法图需要看图与本地渲染；视频按作品选择渲染器与音频工具。ALIGN-video 默认使用新上下文独立审阅：Claude 版由 Codex MCP 审阅，Codex 版每轮新开不继承创作对话的 Codex 子代理，后者属于同模型家族审阅。用户明确选择自审或宿主没有独立 reviewer 时，视频技能继续迭代并如实标注 self-review。记录会区分抽帧观察与实际连续播放、有声观看。技能入口分别是 [Claude Code 的 `.claude/skills/`](https://code.claude.com/docs/en/skills) 和 [Codex 的 `.agents/skills/`](https://developers.openai.com/codex/skills)。
 
 <a id="update"></a>
 
