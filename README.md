@@ -10,6 +10,8 @@ English · [中文](README_CN.md) · [Interactive gallery](https://wanshuiyin.gi
 
 **Out of Line** · ALIGN-video’s first film · 60 seconds · Agent-authored Blender animation and synthesized sound · Zero diffusion models. [▶ Watch with sound](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/) · [Download 1080p MP4](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/out-of-line-v3.mp4)
 
+A machine follows a grid until a paper flower makes it pause and draw its first curve. Its lines eventually recreate the face it once erased. The story carries ALIGN’s exploration: image and video creation can take a path beyond diffusion models, with an agent developing ideas, writing code, rendering and revising the result.
+
 [![Qingming in Wuhan — the final handscroll](docs/assets/cc-final-whole.png)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1)
 
 *Qingming in Wuhan* · Claude executor + Codex MCP reviewer · 11 versions. [Explore the scroll and replay its construction →](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1)

@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Out of Line · ALIGN-video</title>
-  <meta name="description" content="A 60-second film made through agent-authored code: a line-painting machine encounters a paper flower and finds a new way to draw.">
+  <meta name="description" content="A machine leaves its straight path. A 60-second film about finding another way to create images and video through agent-authored code, without diffusion models.">
   <meta property="og:title" content="Out of Line · ALIGN-video">
-  <meta property="og:description" content="60 seconds. Code-authored animation and sound. Zero diffusion models.">
+  <meta property="og:description" content="A paper flower, a first curve, and another way to create. 60 seconds of agent-authored animation and sound, without diffusion models.">
   <meta property="og:image" content="https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/poster.jpg">
   <meta property="og:type" content="website">
   <style>
@@ -44,6 +44,8 @@
     h2 { font-size: 21px; line-height: 1.4; margin: 0 0 12px; }
     .notes p { margin: 0 0 12px; }
     .notes p:last-child { margin-bottom: 0; }
+    .story { margin-bottom: 24px; }
+    .story-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
     details { border-top: 1px solid #d8cebd; margin-top: 22px; padding-top: 16px; font-size: 14px; }
     summary { cursor: pointer; color: #93432e; }
     details p { margin-top: 12px !important; }
@@ -53,6 +55,7 @@
       header { margin-top: 28px; }
       .intro { font-size: 17px; }
       .notes { padding: 20px; }
+      .story-columns { grid-template-columns: 1fr; gap: 20px; }
       .actions { gap: 12px 18px; }
     }
   </style>
@@ -66,8 +69,8 @@
     <header>
       <div class="eyebrow">ALIGN-VIDEO · FIRST FILM</div>
       <h1>Out of Line</h1>
-      <p class="intro">A line-painting machine encounters a paper flower — and finds a new way to draw.</p>
-      <p class="zh" lang="zh-CN">一辆只会画直线的小车，遇见了一朵纸花。</p>
+      <p class="intro">A paper flower makes a machine leave its straight path for the first time. Out of Line turns ALIGN’s exploration into a story: an agent can create images and video through code, without diffusion models.</p>
+      <p class="zh" lang="zh-CN">一朵纸花，让小车第一次离开直线，也让它发现：创造可以有别的路径。Out of Line 把 ALIGN 的探索写成一个故事——图像与视频，也可以由 agent 用代码创造，无需扩散模型。</p>
     </header>
 
     <figure class="film">
@@ -86,6 +89,20 @@
       <a href="https://github.com/wanshuiyin/ALIGN-Agentic-Loop-Image-GeneratioN/blob/main/skills/align-video/SKILL.md">Claude skill</a>
       <a href="https://github.com/wanshuiyin/ALIGN-Agentic-Loop-Image-GeneratioN/blob/main/skills_codex/align-video-codex/SKILL.md">Codex skill</a>
     </div>
+
+    <section class="notes story" aria-labelledby="story">
+      <h2 id="story">The first curve / <span lang="zh-CN">第一道弯</span></h2>
+      <div class="story-columns">
+        <div>
+          <p>In a hall ruled by straight lines, a little painting machine follows the grid, even painting over a chalk smile. Then a paper flower stands in its path. This time, it pauses. To spare the flower, it draws its first curve. The paint leaves the grid, rises into arches, and spreads through the room. From above, those freely growing lines reveal the face the machine once erased.</p>
+          <p>The straight path stands for a familiar way of doing things; the flower is the encounter that makes another way imaginable. That is the question behind ALIGN: must generating images and video depend on diffusion models? Here, an agent develops the idea, writes the program, renders the result, then looks and revises. The machine’s first curve expresses that possibility: creativity can begin by stepping beyond the route we have learned to follow.</p>
+        </div>
+        <div lang="zh-CN">
+          <p>在一座被直线支配的大厅里，小车沿着网格前进，甚至把地上的笑脸也涂掉了。直到一朵纸花出现在它面前。这一次，它停了下来。为了留下纸花，它画出了第一道弯。颜料随之离开网格、长成拱门，在空间里自由铺展。镜头升高，那些曲线最终汇成了它曾经抹掉的笑脸。</p>
+          <p>直线象征着已经习惯的做法，纸花则是让另一种可能浮现的契机。这也是 ALIGN 想探索的问题：生成图像和视频，是否一定要依靠扩散模型？在这里，agent 自己构思、写程序、渲染，再观察和修改作品。小车的第一道弯，表达的正是这种可能：走出熟悉的规则，也能找到创造图像与视频的新路径。</p>
+        </div>
+      </div>
+    </section>
 
     <section class="notes" aria-labelledby="making">
       <h2 id="making">Made through code / <span lang="zh-CN">用代码制作</span></h2>
