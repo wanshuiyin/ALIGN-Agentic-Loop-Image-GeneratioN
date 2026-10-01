@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Out of Line · ALIGN-video</title>
+  <meta name="description" content="A 60-second film made through agent-authored code: a line-painting machine encounters a paper flower and finds a new way to draw.">
+  <meta property="og:title" content="Out of Line · ALIGN-video">
+  <meta property="og:description" content="60 seconds. Code-authored animation and sound. Zero diffusion models.">
+  <meta property="og:image" content="https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/poster.jpg">
+  <meta property="og:type" content="website">
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #eeeadf;
+      color: #302b22;
+      font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+    }
+    main { max-width: 1120px; margin: auto; padding: 30px 28px 64px; }
+    a { color: #93432e; text-underline-offset: 3px; }
+    a:hover { color: #57291d; }
+    a:focus-visible { outline: 2px solid #93432e; outline-offset: 5px; }
+    nav { display: flex; justify-content: space-between; gap: 20px; font-size: 14px; }
+    header { margin: 38px 0 24px; }
+    .eyebrow { color: #856b49; font-size: 13px; letter-spacing: .14em; }
+    h1 { font-size: clamp(38px, 7vw, 68px); line-height: 1.08; letter-spacing: -.04em; margin: 12px 0 18px; }
+    .intro { max-width: 750px; font-size: 19px; line-height: 1.6; margin: 0 0 8px; }
+    .zh { color: #756c5e; margin: 0; }
+    .film { margin: 0; }
+    video {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      background: #151a17;
+      border-radius: 5px;
+    }
+    figcaption { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-top: 12px; font-size: 14px; color: #756c5e; }
+    .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 22px; margin: 22px 0 32px; }
+    .download { padding: 9px 15px; border: 1px solid #b8a78b; border-radius: 3px; text-decoration: none; }
+    .notes { background: #faf7f0; border: 1px solid #d8cebd; border-radius: 3px; padding: 24px 28px; }
+    h2 { font-size: 21px; line-height: 1.4; margin: 0 0 12px; }
+    .notes p { margin: 0 0 12px; }
+    .notes p:last-child { margin-bottom: 0; }
+    details { border-top: 1px solid #d8cebd; margin-top: 22px; padding-top: 16px; font-size: 14px; }
+    summary { cursor: pointer; color: #93432e; }
+    details p { margin-top: 12px !important; }
+    footer { font-size: 13px; color: #756c5e; margin-top: 24px; }
+    @media (max-width: 600px) {
+      main { padding: 20px 16px 40px; }
+      header { margin-top: 28px; }
+      .intro { font-size: 17px; }
+      .notes { padding: 20px; }
+      .actions { gap: 12px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <nav aria-label="Main navigation">
+      <a href="../../">← ALIGN gallery / 作品</a>
+      <a href="https://github.com/wanshuiyin/ALIGN-Agentic-Loop-Image-GeneratioN">GitHub</a>
+    </nav>
+    <header>
+      <div class="eyebrow">ALIGN-VIDEO · FIRST FILM</div>
+      <h1>Out of Line</h1>
+      <p class="intro">A line-painting machine encounters a paper flower — and finds a new way to draw.</p>
+      <p class="zh" lang="zh-CN">一辆只会画直线的小车，遇见了一朵纸花。</p>
+    </header>
+
+    <figure class="film">
+      <video controls playsinline preload="metadata" poster="poster.jpg" width="1920" height="1080" aria-label="Out of Line, a 60-second animated short with music and no dialogue">
+        <source src="out-of-line-v3.mp4" type="video/mp4">
+        <a href="out-of-line-v3.mp4">Download Out of Line (MP4)</a>
+      </video>
+      <figcaption>
+        <span>60 seconds · 1080p · 24 fps · v3</span>
+        <span>Sound on · No dialogue / <span lang="zh-CN">建议开启声音 · 无对白</span></span>
+      </figcaption>
+    </figure>
+
+    <div class="actions">
+      <a class="download" href="out-of-line-v3.mp4" download>Download MP4 · 47.7 MB</a>
+      <a href="https://github.com/wanshuiyin/ALIGN-Agentic-Loop-Image-GeneratioN/blob/main/skills/align-video/SKILL.md">Claude skill</a>
+      <a href="https://github.com/wanshuiyin/ALIGN-Agentic-Loop-Image-GeneratioN/blob/main/skills_codex/align-video-codex/SKILL.md">Codex skill</a>
+    </div>
+
+    <section class="notes" aria-labelledby="making">
+      <h2 id="making">Made through code / <span lang="zh-CN">用代码制作</span></h2>
+      <p>The scenes, animation and cameras were authored as Blender programs; the score and sound effects were composed and synthesized in code. No diffusion, image, video or music generation models were used.</p>
+      <p lang="zh-CN">场景、动画和镜头由 agent 编写 Blender 程序完成，配乐与音效通过代码创作和合成。全片未调用扩散模型或图像、视频、音乐生成模型。</p>
+      <p>This first film informed the general ALIGN-video skills: study a reference, build and render the work, review what the audience receives, then revise the program.</p>
+      <p lang="zh-CN">这是 ALIGN-video 的首个案例。影片的制作经验被整理成通用技能：研究参考、编程制作、看成片、审阅，再把反馈落实到下一版。</p>
+
+      <details>
+        <summary>Production and review / <span lang="zh-CN">制作与评审</span></summary>
+        <p>Claude led the original production with Codex reviews of asset stills, story structure and film image sequences. Codex completed v3 with self-review. The final review used stills and action sequences; it was not a new independent audiovisual review at playback speed. The skills were distilled from this work afterward.</p>
+        <p lang="zh-CN">前期由 Claude 制作、Codex 审阅资产画面、故事和影片抽帧。v3 由 Codex 接手续作并自审，检查基于静帧和动作序列，未进行新一轮正常速度、有声整片的独立审阅。技能正文是在这次实践之后整理的。</p>
+        <p>Existing craft reference: Kling’s <em>THE BEAT</em>. Out of Line’s story, characters and shots are original. Environment and concrete texture assets came from Poly Haven under CC0. See <a href="https://github.com/wanshuiyin/ALIGN-Agentic-Loop-Image-GeneratioN/blob/main/THIRD_PARTY_NOTICES.md">sources and credits</a>.</p>
+      </details>
+    </section>
+    <footer>ALIGN — Agentic Loop Image GeneratioN · <a href="../../">Explore the other works</a></footer>
+  </main>
+</body>
+</html>

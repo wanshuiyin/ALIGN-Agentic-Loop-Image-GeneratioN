@@ -6,6 +6,10 @@
 
 [English](README.md) · 中文 · [交互展示](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/)
 
+[![Out of Line：铜制小车用红色颜料拱门护住纸花，点击观看成片](examples/out-of-line/poster.jpg)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/)
+
+**Out of Line** · ALIGN-video 首个案例 · 60 秒 · Agent 编写 Blender 动画与声音合成程序 · 零扩散模型。[▶ 有声观看完整短片](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/) · [下载 1080p MP4](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/out-of-line-v3.mp4)
+
 [![清明上河图·武汉：Claude 执行、Codex MCP 审阅的最终全卷](docs/assets/cc-final-whole.png)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1)
 
 《清明上河图·武汉》· Claude 执行 + Codex MCP 审阅 · 11 个版本。[展开长卷，回放十道工序 →](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1)
@@ -159,12 +163,13 @@ bash ~/ALIGN-Agentic-Loop-Image-GeneratioN/tools/install.sh codex ~
 
 </details>
 
-## 三个完整案例
+## 四个案例
 
-三条主线均由 Claude Code 执行、Codex MCP 审阅。
+绘画与方法图由 Claude Code 执行、Codex MCP 审阅。Out of Line 前期由 Claude 制作、Codex 审阅，v3 由 Codex 接手续作并自审；播放页附有制作与评审背景。
 
 | 案例 | 可以看什么 |
 |---|---|
+| [Out of Line](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/) | 完整 60 秒有声成片、1080p 下载与制作说明 |
 | [清明上河图·武汉](examples/qingming-wuhan/) | 11 版可回放程序、固定视口演进、工序图和评审决策 |
 | [Figure 1](examples/align-figure/) | 最终程序、七版 PNG/SVG、五轮盲评原文和设计决定 |
 | [千里江山图](examples/qianli-process/) | 最终程序、十道绘画工序、演进图和 11 轮盲评记录 |

@@ -772,7 +772,8 @@ line-painting machine erases a chalk face, encounters a paper flower, bends
 its path around it and grows a new environment of paint. An overhead view
 reveals an enlarged version of the opening face; the film returns to the
 flower. The film was made with code-authored Blender scenes and a programmed
-score. Its production project and media are separate from this skill package.
+score. [Watch the finished film](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/).
+Its production project is maintained separately from this skill package.
 
 The earlier work used Claude as executor and Codex for reviews. Those reviews
 included asset stills, a story discussion and film readings from images and

@@ -6,6 +6,10 @@
 
 English · [中文](README_CN.md) · [Interactive gallery](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/)
 
+[![Out of Line — a brass machine's red paint arch shelters a paper flower; click to watch](examples/out-of-line/poster.jpg)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/)
+
+**Out of Line** · ALIGN-video’s first film · 60 seconds · Agent-authored Blender animation and synthesized sound · Zero diffusion models. [▶ Watch with sound](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/) · [Download 1080p MP4](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/out-of-line-v3.mp4)
+
 [![Qingming in Wuhan — the final handscroll](docs/assets/cc-final-whole.png)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1)
 
 *Qingming in Wuhan* · Claude executor + Codex MCP reviewer · 11 versions. [Explore the scroll and replay its construction →](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1)
@@ -155,12 +159,13 @@ If a skill folder already exists there, the installer leaves it in place and pri
 
 </details>
 
-## Three worked examples
+## Four examples
 
-All three main examples were drawn in Claude Code and reviewed through Codex MCP.
+The paintings and method figure were drawn in Claude Code and reviewed through Codex MCP. Out of Line began with Claude production and Codex review; Codex completed v3 with self-review. Its playback page includes the production and review context.
 
 | Example | What you can explore |
 |---|---|
+| [Out of Line](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/) | The complete 60-second film with sound, a 1080p download and production notes |
 | [Qingming in Wuhan](examples/qingming-wuhan/) | 11 runnable versions, fixed-view evolution, process sheets and review decisions |
 | [Figure 1](examples/align-figure/) | Final program, seven PNG/SVG versions, five blind-review replies and design decisions |
 | [A Thousand Li of Rivers and Mountains](examples/qianli-process/) | Final program, ten painting stages, an evolution sheet and 11 blind-review records |
