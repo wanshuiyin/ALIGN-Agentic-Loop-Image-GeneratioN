@@ -10,6 +10,8 @@
 
 **Out of Line** · ALIGN-video 首个案例 · 60 秒 · Agent 编写 Blender 动画与声音合成程序 · 零扩散模型。[▶ 有声观看完整短片](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/) · [下载 1080p MP4](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/out-of-line/out-of-line-v3.mp4)
 
+小车原本只会沿着网格前进，直到一朵纸花让它停下来，画出第一道弯。那些曲线最终重新画出了它曾经抹掉的笑脸。故事承载着 ALIGN 的探索：图像与视频的创作，也可以走出扩散模型这条熟悉的路线，由 agent 自主构思、编程、渲染，再观察和改进作品。
+
 [![清明上河图·武汉：Claude 执行、Codex MCP 审阅的最终全卷](docs/assets/cc-final-whole.png)](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1)
 
 《清明上河图·武汉》· Claude 执行 + Codex MCP 审阅 · 11 个版本。[展开长卷，回放十道工序 →](https://wanshuiyin.github.io/ALIGN-Agentic-Loop-Image-GeneratioN/examples/qingming-wuhan/qingming-wuhan-preview.html#p=1)
