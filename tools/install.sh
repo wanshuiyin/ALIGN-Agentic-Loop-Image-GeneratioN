@@ -5,7 +5,7 @@ usage() {
   cat <<'EOF'
 Usage: bash tools/install.sh <claude|codex> <project-directory>
 
-Link both ALIGN skills into a project's skill directory:
+Link all three ALIGN skills into a project's skill directory:
   bash tools/install.sh claude ~/your-project   # .claude/skills/
   bash tools/install.sh codex ~/your-project    # .agents/skills/
 
@@ -34,8 +34,8 @@ mkdir -p -- "$2"
 project_root="$(cd -- "$2" && pwd -P)"
 destination="$project_root/$target_dir"
 
-# Check for existing skills before creating either link.
-for task in reference-art-loop method-figure-loop; do
+# Check for existing skills before creating any links.
+for task in reference-art-loop method-figure-loop align-video; do
   source_path="$repo_root/$source_dir/$task$suffix"
   target_path="$destination/$task$suffix"
   if [[ ! -f "$source_path/SKILL.md" ]]; then
@@ -52,7 +52,7 @@ for task in reference-art-loop method-figure-loop; do
 done
 
 mkdir -p -- "$destination"
-for task in reference-art-loop method-figure-loop; do
+for task in reference-art-loop method-figure-loop align-video; do
   source_path="$repo_root/$source_dir/$task$suffix"
   target_path="$destination/$task$suffix"
   if [[ -L "$target_path" && "$target_path" -ef "$source_path" ]]; then

@@ -57,12 +57,15 @@ Both configurations here use independent review; the comparison shows how differ
 
 [Claude Code](#claude-code) · [Codex](#codex) · [Update](#update)
 
-Two tasks, with a complete skill for each runtime:
+Three tasks, with a complete skill for each runtime:
 
 | Task | Claude Code | Codex |
 |---|---|---|
 | Paint from a reference, or carry its craft into a new subject | [reference-art-loop](skills/reference-art-loop/SKILL.md) | [reference-art-loop-codex](skills_codex/reference-art-loop-codex/SKILL.md) |
 | Draw a method figure with construction replay and SVG export | [method-figure-loop](skills/method-figure-loop/SKILL.md) | [method-figure-loop-codex](skills_codex/method-figure-loop-codex/SKILL.md) |
+| Create or revise a coded video: animation, explainers, product demonstrations and motion design | [align-video](skills/align-video/SKILL.md) | [align-video-codex](skills_codex/align-video-codex/SKILL.md) |
+
+**ALIGN-video** extends the loop to motion, sound and editing. Its prose workflow covers reference study, an animatic, a representative finished passage, production, independent review, revision and delivery. The agent chooses and writes the implementation; no video framework or Python helpers are bundled. It uses no image, video or music generation models. *Out of Line* supplies worked experience, not a required story, renderer or template. The stages scale from a small 2D loop to a longer film.
 
 Clone once, then choose your runtime below. Replace `~/your-project` with the folder where you want to work.
 
@@ -75,7 +78,7 @@ git clone https://github.com/wanshuiyin/ALIGN-Agentic-Loop-Image-GeneratioN.git 
 Claude draws; Codex reviews through MCP. With [Claude Code installed](https://code.claude.com/docs/en/setup), run:
 
 ```sh
-# 1. Link both skills into <project>/.claude/skills/
+# 1. Link all three skills into <project>/.claude/skills/
 bash ~/ALIGN-Agentic-Loop-Image-GeneratioN/tools/install.sh claude ~/your-project
 
 # 2. Set up Codex for visual review (skip install/login if already set up)
@@ -88,11 +91,12 @@ cd ~/your-project
 claude
 ```
 
-In Claude Code, attach your reference image and invoke either skill:
+In Claude Code, supply your brief and references and invoke the relevant skill:
 
 ```text
 /reference-art-loop Qingming Along the River → Wuhan → p5.js handscroll, rounds: 8
 /method-figure-loop Reference Figure 1 → my method → p5.js, rounds: 5
+/align-video Make a wordless short about a lamp learning to share its light, save in ./lamp-film, rounds: 4
 ```
 
 ### Codex
@@ -100,7 +104,7 @@ In Claude Code, attach your reference image and invoke either skill:
 Codex draws and opens a fresh Codex subagent for each visual review. This version uses native subagents and needs no MCP setup.
 
 ```sh
-# 1. Link both skills into <project>/.agents/skills/
+# 1. Link all three skills into <project>/.agents/skills/
 bash ~/ALIGN-Agentic-Loop-Image-GeneratioN/tools/install.sh codex ~/your-project
 
 # 2. Install and sign in (skip if already set up)
@@ -112,16 +116,17 @@ cd ~/your-project
 codex
 ```
 
-In Codex, attach your reference image and invoke either skill:
+In Codex, supply your brief and references and invoke the relevant skill:
 
 ```text
 $reference-art-loop-codex Qingming Along the River → Wuhan → p5.js handscroll, rounds: 8
 $method-figure-loop-codex Reference Figure 1 → my method → p5.js, rounds: 5
+$align-video-codex Make a clear animated explanation of merge sort, save in ./sort-film, rounds: 4
 ```
 
-Both skills are also available when you open the ALIGN checkout itself in Codex. [More Codex examples](skills_codex/README.md) · [Codex CLI installation](https://developers.openai.com/codex/cli).
+All three skills are also available when you open the ALIGN checkout itself in Codex. [More Codex examples](skills_codex/README.md) · [Codex CLI installation](https://developers.openai.com/codex/cli).
 
-For either runtime, provide a reference image, an output directory and the subject or method to draw. The agent needs image viewing, local browser rendering and its reviewer tools. Skills are discovered through [Claude Code's `.claude/skills/`](https://code.claude.com/docs/en/skills) or [Codex's `.agents/skills/`](https://developers.openai.com/codex/skills).
+For either runtime, provide the subject or brief, an output directory and any reference media. Painting and figure tasks need image viewing and local rendering; video adds the renderer and audio tools appropriate to the project. ALIGN-video defaults to fresh-context independent review: Claude + Codex through MCP, or Codex + a native Codex subagent. The latter is same-family review. When explicitly requested or when a separate reviewer is unavailable, the video skill continues with labeled self-review. Review records distinguish sampled images from actual continuous playback and listening. Skills are discovered through [Claude Code's `.claude/skills/`](https://code.claude.com/docs/en/skills) or [Codex's `.agents/skills/`](https://developers.openai.com/codex/skills).
 
 ### Update
 
