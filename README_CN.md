@@ -178,4 +178,14 @@ bash ~/ALIGN-Agentic-Loop-Image-GeneratioN/tools/install.sh codex ~
 
 记录也保留了没有做好的地方。两卷主线作品都没有通过视觉门，Codex 武汉版也没有通过。Figure 1 最后一次独立评审是 v5 的 7/10，v6、v7 是自看。两次武汉运行的初稿、轮数和人工介入不同，对比说的是这两幅作品；“规格与直接写代码”“外部评审与自审”这两个对照实验尚未运行。
 
+## 💬 交流群
+
+加入微信群（与 [ARIS](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) 社区共享），一起交流 agent 作画与程序视频：
+
+<p align="center">
+  <img src="docs/wechat_group.jpg" alt="微信群二维码（与 ARIS 社区共享）" width="300">
+</p>
+
+*（群二维码每周轮换——过期了就开个 issue，我们会贴新的。）*
+
 仓库原创内容采用 [MIT 许可](LICENSE)。[第三方素材来源与许可](THIRD_PARTY_NOTICES.md)。

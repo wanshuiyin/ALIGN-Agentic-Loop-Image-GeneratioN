@@ -174,4 +174,14 @@ The paintings and method figure were drawn in Claude Code and reviewed through C
 
 The review records also show the limits. Neither main painting passed its visual gate; the Codex Wuhan run did not pass either. Figure 1's last independent review was v5 at 7/10; v6 and v7 were self-reviewed. The two Wuhan runs differed in starting point, iteration count and human input, so the comparison describes these works. The planned tests of specifications versus direct coding, and external review versus self-review, have not been run.
 
+## 💬 Community
+
+Join the WeChat group (shared with the [ARIS](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) community) to talk about agent-authored images and video:
+
+<p align="center">
+  <img src="docs/wechat_group.jpg" alt="WeChat group QR code (shared with the ARIS community)" width="300">
+</p>
+
+*(The group QR rotates weekly — if it's expired, open an issue and we'll post a fresh one.)*
+
 [MIT](LICENSE) for original repository content. [Third-party sources and licenses](THIRD_PARTY_NOTICES.md).
